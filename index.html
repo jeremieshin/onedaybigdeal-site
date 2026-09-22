@@ -243,6 +243,8 @@
     background:var(--surface);box-shadow:var(--shadow);
     display:flex;flex-direction:column;gap:16px;
   }
+  #banner-type-list{display:flex;flex-direction:column;}
+  .banner-type-card + .banner-type-card{margin-top:40px;padding-top:40px;border-top:1px solid var(--line);}
   .banner-type-head{display:flex;align-items:center;gap:12px;}
   .banner-type-name{
     flex:1 1 0;font:inherit;font-size:18px;font-weight:700;padding:12px 14px;
@@ -271,6 +273,15 @@
     background:var(--surface-2);color:var(--ink);width:100%;resize:vertical;min-height:44px;
   }
   .banner-copy-input:focus{outline:2px solid var(--accent);outline-offset:1px;}
+  .banner-field{display:flex;flex-direction:column;gap:4px;}
+  .banner-field label{font-size:12px;color:var(--muted);font-weight:500;}
+  .banner-coupon-input{
+    font:inherit;font-size:14.5px;padding:13px 14px;border:1px solid var(--line-strong);border-radius:4px;
+    background:var(--surface-2);color:var(--ink);width:100%;
+  }
+  .banner-coupon-input:focus{outline:2px solid var(--accent);outline-offset:1px;}
+  .banner-logo-check{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink);cursor:pointer;width:fit-content;}
+  .banner-logo-check input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;}
   .btn-remove-entry{
     align-self:flex-start;font:inherit;font-size:12.5px;font-weight:600;color:var(--muted);
     background:none;border:none;padding:2px 0;cursor:pointer;text-decoration:underline;
@@ -2054,7 +2065,18 @@
           '<input type="file" accept="image/*" class="banner-image-input visually-hidden">' +
         '</label>' +
         '<div class="banner-entry-body">' +
-          '<textarea class="banner-copy-input" rows="2" placeholder="카피 · 메모 (선택)"></textarea>' +
+          '<div class="banner-field">' +
+            '<label>카피</label>' +
+            '<textarea class="banner-copy-input" rows="2" placeholder="예: 오늘만 역대급 혜택"></textarea>' +
+          '</div>' +
+          '<div class="banner-field">' +
+            '<label>쿠폰</label>' +
+            '<input type="text" class="banner-coupon-input" placeholder="예: ~15% 카드할인, T멤버십 11%">' +
+          '</div>' +
+          '<label class="banner-logo-check">' +
+            '<input type="checkbox" class="banner-logo-input">' +
+            '<span>원데이빅딜 로고 삽입</span>' +
+          '</label>' +
           '<button type="button" class="btn-remove-entry">이 배너 삭제</button>' +
         '</div>';
 
@@ -2159,6 +2181,8 @@
             var entries = card.querySelectorAll('.banner-entry');
             var imageValues = [];
             var copyValues = [];
+            var couponValues = [];
+            var logoValues = [];
             for (var j = 0; j < entries.length; j++) {
               var entry = entries[j];
               var fileInput = entry.querySelector('.banner-image-input');
@@ -2170,14 +2194,20 @@
               }
               imageValues.push(imgValue);
               copyValues.push(entry.querySelector('.banner-copy-input').value || '');
+              couponValues.push(entry.querySelector('.banner-coupon-input').value || '');
+              logoValues.push(entry.querySelector('.banner-logo-input').checked ? '포함' : '');
             }
             for (var m = 0; m < entries.length; m++) {
               rows.push(['MO_' + typeName + '_이미지' + (m + 1), imageValues[m]]);
               rows.push(['MO_' + typeName + '_카피' + (m + 1), copyValues[m]]);
+              rows.push(['MO_' + typeName + '_쿠폰' + (m + 1), couponValues[m]]);
+              rows.push(['MO_' + typeName + '_로고' + (m + 1), logoValues[m]]);
             }
             for (var q = 0; q < entries.length; q++) {
               rows.push(['PC_' + typeName + '_이미지' + (q + 1), imageValues[q]]);
               rows.push(['PC_' + typeName + '_카피' + (q + 1), copyValues[q]]);
+              rows.push(['PC_' + typeName + '_쿠폰' + (q + 1), couponValues[q]]);
+              rows.push(['PC_' + typeName + '_로고' + (q + 1), logoValues[q]]);
             }
           }
 
