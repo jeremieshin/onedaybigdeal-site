@@ -56,6 +56,7 @@
   }
   .ref-img-wrap img{display:block;width:100%;height:auto;}
   .ref-img-wrap .ref-photo{position:absolute;display:none;object-fit:cover;}
+  .ref-mask{position:absolute;display:none;background:#fff;}
   .ref-highlight{
     position:absolute;display:none;
     border:3px solid var(--accent);border-radius:6px;
@@ -150,10 +151,10 @@
   .btn-remove-benefit{
     position:absolute;top:0;right:0;
     display:flex;align-items:center;justify-content:center;
-    width:26px;height:26px;padding:0;border-radius:50%;
+    width:14px;height:14px;padding:0;border-radius:3px;
     font:inherit;color:var(--muted);background:var(--surface);border:1px solid var(--line-strong);cursor:pointer;
   }
-  .btn-remove-benefit svg{width:13px;height:13px;}
+  .btn-remove-benefit svg{width:8px;height:8px;}
   .btn-remove-benefit:hover{border-color:var(--accent);color:var(--accent);}
   .btn-remove-benefit[hidden]{display:none;}
   .btn-add-benefit{
@@ -420,6 +421,9 @@
         <span class="rt rtb rtb-main" id="rt-b3-main"></span>
         <span class="rt rtb rtb-sub rtb-1l" id="rt-b3-sub1"></span>
         <span class="rt rtb rtb-sub rtb-1l" id="rt-b3-sub2"></span>
+        <div class="ref-mask" id="ref-mask-1"></div>
+        <div class="ref-mask" id="ref-mask-2"></div>
+        <div class="ref-mask" id="ref-mask-3"></div>
         <div class="ref-highlight"></div>
       </div>
       <div class="ref-bottom-pad"></div>
@@ -751,6 +755,17 @@
 (function(){
   function $(id){ return document.getElementById(id); }
 
+  /* 혜택 카드는 고정 슬롯(1~3)을 쓰지만, 화면/시트/기획서에는 "현재 보이는 순서" 기준으로
+     혜택1, 혜택2 처럼 빈틈없이 다시 번호를 매겨서 보여줘요. slotNum은 고정 슬롯 번호. */
+  function benefitDisplayLabel(slotNum){
+    var n = 0;
+    for (var k = 1; k <= slotNum; k++){
+      var c = document.getElementById('benefit-card-' + k);
+      if (c && !c.hidden) n++;
+    }
+    return '혜택' + n;
+  }
+
   document.querySelectorAll('input[type=file]').forEach(function(inp){
     inp.addEventListener('change', function(){
       var f = inp.files && inp.files[0];
@@ -935,6 +950,32 @@
     });
   }
   positionRefPhotos();
+
+  /* 혜택 카드를 지우면, 레퍼런스 배경 사진에 박혀 있는 예시 아이콘·카피 자리를 통째로
+     흰 박스로 덮어서 안 보이게 해요(아이콘 자리 + 카피 3줄 자리를 한 번에 커버). */
+  var BENEFIT_MASK_MAP = {
+    1: {x:48,  y:213, w:208, h:287},
+    2: {x:256, y:213, w:208, h:287},
+    3: {x:464, y:213, w:208, h:287}
+  };
+  function positionBenefitMasks(){
+    var dims = SECTION_DIMS.benefit;
+    if (!dims) return;
+    [1, 2, 3].forEach(function(i){
+      var mask = document.getElementById('ref-mask-' + i);
+      var box = BENEFIT_MASK_MAP[i];
+      if (!mask || !box) return;
+      mask.style.left = (box.x / dims.w * 100) + '%';
+      mask.style.top = (box.y / dims.h * 100) + '%';
+      mask.style.width = (box.w / dims.w * 100) + '%';
+      mask.style.height = (box.h / dims.h * 100) + '%';
+    });
+  }
+  positionBenefitMasks();
+  window.addEventListener('resize', positionBenefitMasks);
+  document.querySelectorAll('.section-row[data-ref="benefit"] .ref-img').forEach(function(img){
+    img.addEventListener('load', positionBenefitMasks);
+  });
 
   var refPhotoUrls = {};
   document.querySelectorAll('input[type=file]').forEach(function(inp){
@@ -1163,13 +1204,23 @@
         var el = document.getElementById('rt-b' + i + '-' + suf);
         if (el) el.style.display = visible ? '' : 'none';
       });
+      // 레퍼런스 배경 이미지에 박혀 있는 예시 아이콘까지 완전히 가려서, 카드를 지우면 아이콘도 같이 사라지게 해요.
+      var mask = document.getElementById('ref-mask-' + i);
+      if (mask) mask.style.display = visible ? 'none' : 'block';
     }
     function refresh(){
       var n = visibleCount();
-      cards.forEach(function(c){
+      cards.forEach(function(c, idx){
         if (!c || c.hidden) return;
+        var slot = idx + 1;
+        var label = benefitDisplayLabel(slot);
+        var titleEl = c.querySelector('.sub-title');
+        if (titleEl) titleEl.textContent = label;
         var btn = c.querySelector('.btn-remove-benefit');
-        if (btn) btn.hidden = n <= 1;
+        if (btn) {
+          btn.hidden = n <= 1;
+          btn.setAttribute('aria-label', label + ' 삭제');
+        }
       });
       addBtn.hidden = n >= 3;
       grid.style.gridTemplateColumns = 'repeat(' + Math.max(n, 1) + ', 1fr)';
@@ -1742,7 +1793,10 @@
         var firstFieldEl = $(group.fields[0].id);
         var benefitCard = firstFieldEl && firstFieldEl.closest('.benefit-card');
         if (benefitCard && benefitCard.hidden) continue; // 삭제(X)한 혜택 카드는 시트에서 제외
-        rows.push(['**' + group.section + '**', '']);
+        var displaySection = group.section;
+        var benefitSlotM = group.section.match(/^혜택(\d)$/);
+        if (benefitSlotM) displaySection = benefitDisplayLabel(Number(benefitSlotM[1])); // 보이는 순서대로 혜택1,2.. 다시 번호
+        rows.push(['**' + displaySection + '**', '']);
         var values = [];
         for (var j = 0; j < group.fields.length; j++) {
           var f = group.fields[j];
@@ -1754,18 +1808,18 @@
             var inp = $(f.id);
             var file = inp && inp.files && inp.files[0];
             if (file) {
-              setStatus(group.section + ' · ' + f.name + ' 업로드 중...', '');
-              value = await uploadImage(file, group.section + '_' + f.name, designerEmail);
+              setStatus(displaySection + ' · ' + f.name + ' 업로드 중...', '');
+              value = await uploadImage(file, displaySection + '_' + f.name, designerEmail);
             }
           }
           values.push(value);
         }
         // 같은 카테고리 안에서 MO끼리, PC끼리 묶어서 넣습니다.
         for (var m = 0; m < group.fields.length; m++) {
-          rows.push(['MO_' + group.section + '_' + group.fields[m].name, values[m]]);
+          rows.push(['MO_' + displaySection + '_' + group.fields[m].name, values[m]]);
         }
         for (var q = 0; q < group.fields.length; q++) {
-          rows.push(['PC_' + group.section + '_' + group.fields[q].name, values[q]]);
+          rows.push(['PC_' + displaySection + '_' + group.fields[q].name, values[q]]);
         }
       }
 
@@ -1877,8 +1931,11 @@
           if (!el || el.closest('.section-row') !== row) continue;
           var benefitCard = el.closest('.benefit-card');
           if (benefitCard && benefitCard.hidden) continue; // 삭제(X)한 혜택 카드는 기획서에서 제외
-          if (groupNames.indexOf(group.section) < 0) groupNames.push(group.section);
-          items.push({ group: group.section, name: f.name, type: f.type, el: el });
+          var displaySection = group.section;
+          var benefitSlotM = group.section.match(/^혜택(\d)$/);
+          if (benefitSlotM) displaySection = benefitDisplayLabel(Number(benefitSlotM[1])); // 보이는 순서대로 다시 번호
+          if (groupNames.indexOf(displaySection) < 0) groupNames.push(displaySection);
+          items.push({ group: displaySection, name: f.name, type: f.type, el: el });
         }
       }
       var multi = groupNames.length > 1;
