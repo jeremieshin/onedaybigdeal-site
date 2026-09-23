@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -146,6 +145,24 @@
     border:none;background:transparent;padding:0;
     display:flex;flex-direction:column;gap:10px;
   }
+  .benefit-card{position:relative;}
+  .benefit-card[hidden]{display:none;}
+  .btn-remove-benefit{
+    position:absolute;top:0;right:0;
+    display:flex;align-items:center;justify-content:center;
+    width:26px;height:26px;padding:0;border-radius:50%;
+    font:inherit;color:var(--muted);background:var(--surface);border:1px solid var(--line-strong);cursor:pointer;
+  }
+  .btn-remove-benefit svg{width:13px;height:13px;}
+  .btn-remove-benefit:hover{border-color:var(--accent);color:var(--accent);}
+  .btn-remove-benefit[hidden]{display:none;}
+  .btn-add-benefit{
+    font:inherit;font-size:14px;font-weight:700;color:var(--ink);background:var(--surface);
+    border:1.5px dashed var(--line-strong);border-radius:12px;padding:13px;cursor:pointer;width:100%;
+    margin-top:16px;
+  }
+  .btn-add-benefit:hover{border-color:var(--accent);color:var(--accent);}
+  .btn-add-benefit[hidden]{display:none;}
   .sub-card .sub-title{
     font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);
     text-transform:uppercase;letter-spacing:.04em;
@@ -184,6 +201,10 @@
   .submit-note b{color:var(--ink);font-weight:600;}
 
   .action-row{display:flex;gap:10px;flex-wrap:wrap;}
+  .btn-pair{display:flex;gap:10px;align-items:stretch;}
+  .btn-pair .submit-btn,.btn-pair .plan-btn{width:auto;flex:1 1 auto;}
+  .btn-pair .secondary-btn{flex:0 1 190px;}
+  @media (max-width:560px){.btn-pair{flex-direction:column;}.btn-pair .secondary-btn{flex:1 1 auto;}}
   .secondary-btn{
     font:inherit;font-weight:600;font-size:13.5px;
     display:inline-flex;align-items:center;gap:8px;
@@ -409,8 +430,11 @@
         <div class="field"><label for="bt-sub">서브카피</label><input type="text" id="bt-sub" placeholder="예: 단 하루"></div>
         <div class="field"><label for="bt-main">메인카피</label><input type="text" id="bt-main" placeholder="예: 👛 지갑이 열리는 혜택!"></div>
       </div>
-      <div class="sub-grid benefits">
-        <div class="sub-card">
+      <div class="sub-grid benefits" id="benefit-grid">
+        <div class="sub-card benefit-card" id="benefit-card-1">
+          <button type="button" class="btn-remove-benefit" aria-label="혜택1 삭제">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+          </button>
           <div class="sub-title">혜택1</div>
           <label class="upload" for="b1-image">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>
@@ -422,7 +446,10 @@
           <div class="field"><label for="b1-sub1">서브카피1</label><input type="text" id="b1-sub1" placeholder="예: 11pay 카드 결제 시"></div>
           <div class="field"><label for="b1-sub2">서브카피2</label><input type="text" id="b1-sub2" placeholder="예: 최대 5% 적립"></div>
         </div>
-        <div class="sub-card">
+        <div class="sub-card benefit-card" id="benefit-card-2">
+          <button type="button" class="btn-remove-benefit" aria-label="혜택2 삭제">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+          </button>
           <div class="sub-title">혜택2</div>
           <label class="upload" for="b2-image">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>
@@ -434,7 +461,10 @@
           <div class="field"><label for="b2-sub1">서브카피1</label><input type="text" id="b2-sub1" placeholder="예: 양반죽 구매 시"></div>
           <div class="field"><label for="b2-sub2">서브카피2</label><input type="text" id="b2-sub2" placeholder="예: 한우사골곰탕 증정"></div>
         </div>
-        <div class="sub-card">
+        <div class="sub-card benefit-card" id="benefit-card-3">
+          <button type="button" class="btn-remove-benefit" aria-label="혜택3 삭제">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+          </button>
           <div class="sub-title">혜택3</div>
           <label class="upload" for="b3-image">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>
@@ -447,6 +477,7 @@
           <div class="field"><label for="b3-sub2">서브카피2</label><input type="text" id="b3-sub2" placeholder="예: 추가 할인"></div>
         </div>
       </div>
+      <button type="button" class="btn-add-benefit" id="btn-add-benefit">+ 혜택 추가</button>
     </div>
   </div>
 
@@ -627,13 +658,15 @@
   </div>
 
   <div class="submit-card">
-    <button class="submit-btn" id="btn-create-sheet" type="button">구글시트 만들기</button>
-    <button class="plan-btn" id="btn-create-plan" type="button">기획서 만들기</button>
-    <div class="action-row">
+    <div class="btn-pair">
+      <button class="submit-btn" id="btn-create-sheet" type="button">구글시트 만들기</button>
       <button class="secondary-btn" id="btn-copy-link" type="button" disabled>
         <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
         <span class="btn-label">시트 링크 복사하기</span>
       </button>
+    </div>
+    <div class="btn-pair">
+      <button class="plan-btn" id="btn-create-plan" type="button">기획서 만들기</button>
       <button class="secondary-btn" id="btn-copy-plan" type="button" disabled>
         <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
         <span class="btn-label">기획서 링크 복사하기</span>
@@ -662,13 +695,15 @@
     </div>
   </div>
   <div class="submit-card">
-    <button class="submit-btn" id="btn-create-banner-sheet" type="button">구글시트 만들기</button>
-    <button class="plan-btn" id="btn-create-banner-plan" type="button">기획서 만들기</button>
-    <div class="action-row">
+    <div class="btn-pair">
+      <button class="submit-btn" id="btn-create-banner-sheet" type="button">구글시트 만들기</button>
       <button class="secondary-btn" id="btn-copy-banner-link" type="button" disabled>
         <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
         <span class="btn-label">시트 링크 복사하기</span>
       </button>
+    </div>
+    <div class="btn-pair">
+      <button class="plan-btn" id="btn-create-banner-plan" type="button">기획서 만들기</button>
       <button class="secondary-btn" id="btn-copy-banner-plan" type="button" disabled>
         <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
         <span class="btn-label">기획서 링크 복사하기</span>
@@ -1102,6 +1137,68 @@
     img.addEventListener('load', renderBenefitText);
   });
   renderBenefitText();
+
+  /* ---- 혜택 개수 조절 (카드별 X버튼으로 1~3개까지) ---- */
+  (function(){
+    var grid = document.getElementById('benefit-grid');
+    var addBtn = document.getElementById('btn-add-benefit');
+    if (!grid || !addBtn) return;
+    var cards = [1, 2, 3].map(function(i){ return document.getElementById('benefit-card-' + i); });
+
+    function visibleCount(){
+      return cards.filter(function(c){ return c && !c.hidden; }).length;
+    }
+    function clearBenefit(i){
+      ['main', 'sub1', 'sub2'].forEach(function(suf){
+        var el = $('b' + i + '-' + suf);
+        if (el) el.value = '';
+      });
+      var fileInp = $('b' + i + '-image');
+      if (fileInp) { fileInp.value = ''; fileInp.dispatchEvent(new Event('change')); }
+      var nameEl = $('b' + i + '-image-name');
+      if (nameEl) nameEl.textContent = '';
+    }
+    function setSpanVisible(i, visible){
+      ['main', 'sub1', 'sub2'].forEach(function(suf){
+        var el = document.getElementById('rt-b' + i + '-' + suf);
+        if (el) el.style.display = visible ? '' : 'none';
+      });
+    }
+    function refresh(){
+      var n = visibleCount();
+      cards.forEach(function(c){
+        if (!c || c.hidden) return;
+        var btn = c.querySelector('.btn-remove-benefit');
+        if (btn) btn.hidden = n <= 1;
+      });
+      addBtn.hidden = n >= 3;
+      grid.style.gridTemplateColumns = 'repeat(' + Math.max(n, 1) + ', 1fr)';
+    }
+    cards.forEach(function(c, idx){
+      if (!c) return;
+      var i = idx + 1;
+      var btn = c.querySelector('.btn-remove-benefit');
+      if (!btn) return;
+      btn.addEventListener('click', function(){
+        if (visibleCount() <= 1) return;
+        c.hidden = true;
+        setSpanVisible(i, false);
+        clearBenefit(i);
+        renderBenefitText();
+        refresh();
+      });
+    });
+    addBtn.addEventListener('click', function(){
+      var hiddenCard = cards.filter(function(c){ return c && c.hidden; })[0];
+      if (!hiddenCard) return;
+      hiddenCard.hidden = false;
+      var idx = cards.indexOf(hiddenCard);
+      setSpanVisible(idx + 1, true);
+      renderBenefitText();
+      refresh();
+    });
+    refresh();
+  })();
 
   /* ---- 특가상품 텍스트 실시간 반영 (좌표는 원본 720x1056 기준, 화면 폭에 맞춰 환산) ---- */
   var TEASER_TEXT = {
@@ -1642,6 +1739,9 @@
       var rows = [];
       for (var i = 0; i < FIELD_MAP.length; i++) {
         var group = FIELD_MAP[i];
+        var firstFieldEl = $(group.fields[0].id);
+        var benefitCard = firstFieldEl && firstFieldEl.closest('.benefit-card');
+        if (benefitCard && benefitCard.hidden) continue; // 삭제(X)한 혜택 카드는 시트에서 제외
         rows.push(['**' + group.section + '**', '']);
         var values = [];
         for (var j = 0; j < group.fields.length; j++) {
@@ -1775,6 +1875,8 @@
           var f = group.fields[j];
           var el = $(f.id);
           if (!el || el.closest('.section-row') !== row) continue;
+          var benefitCard = el.closest('.benefit-card');
+          if (benefitCard && benefitCard.hidden) continue; // 삭제(X)한 혜택 카드는 기획서에서 제외
           if (groupNames.indexOf(group.section) < 0) groupNames.push(group.section);
           items.push({ group: group.section, name: f.name, type: f.type, el: el });
         }
