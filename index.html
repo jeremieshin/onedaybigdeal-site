@@ -248,24 +248,22 @@
   .banner-type-head{display:flex;align-items:center;gap:12px;}
   .banner-type-label{flex:1 1 0;font-size:19px;font-weight:700;letter-spacing:-0.005em;color:var(--ink);}
   .btn-remove-type{
-    font:inherit;font-size:13px;font-weight:600;color:var(--muted);background:none;
-    border:1px solid var(--line-strong);border-radius:8px;padding:9px 14px;cursor:pointer;white-space:nowrap;
+    flex:none;display:flex;align-items:center;justify-content:center;
+    width:28px;height:28px;padding:0;border-radius:50%;
+    font:inherit;color:var(--muted);background:none;border:1px solid var(--line-strong);cursor:pointer;
   }
+  .btn-remove-type svg{width:14px;height:14px;}
   .btn-remove-type:hover{border-color:var(--accent);color:var(--accent);}
   .banner-entry-list{display:flex;flex-direction:column;gap:0;}
   .banner-entry + .banner-entry{margin-top:32px;padding-top:32px;border-top:1px dashed var(--line);}
   .banner-logo-check{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink);cursor:pointer;width:fit-content;}
   .banner-logo-check input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;}
-  .btn-remove-entry{
-    font:inherit;font-size:12.5px;font-weight:600;color:var(--muted);
-    background:none;border:none;padding:2px 0;margin-top:4px;cursor:pointer;text-decoration:underline;
-  }
-  .btn-remove-entry:hover{color:var(--accent);}
-  .btn-add-entry{
+  .btn-add-entry,.btn-remove-entry{
     font:inherit;font-size:13.5px;font-weight:600;color:var(--ink);background:var(--surface-2);
     border:1.5px dashed var(--line-strong);border-radius:8px;padding:10px;cursor:pointer;
   }
-  .btn-add-entry:hover{border-color:var(--accent);color:var(--accent);}
+  .btn-remove-entry{margin-top:12px;}
+  .btn-add-entry:hover,.btn-remove-entry:hover{border-color:var(--accent);color:var(--accent);}
   .banner-type-picker-wrap{position:relative;}
   .btn-add-type{
     font:inherit;font-size:14.5px;font-weight:700;color:var(--ink);background:var(--surface);
@@ -664,10 +662,15 @@
   </div>
   <div class="submit-card">
     <button class="submit-btn" id="btn-create-banner-sheet" type="button">구글시트 만들기</button>
+    <button class="plan-btn" id="btn-create-banner-plan" type="button">기획서 만들기</button>
     <div class="action-row">
       <button class="secondary-btn" id="btn-copy-banner-link" type="button" disabled>
         <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
         <span class="btn-label">시트 링크 복사하기</span>
+      </button>
+      <button class="secondary-btn" id="btn-copy-banner-plan" type="button" disabled>
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+        <span class="btn-label">기획서 링크 복사하기</span>
       </button>
     </div>
     <div class="status-msg" id="banner-status-msg"></div>
@@ -2166,7 +2169,7 @@
               '<div class="field"><label for="bb-copy1-' + seq + '">카피 줄1</label><input type="text" id="bb-copy1-' + seq + '" data-bbinput="copy1" placeholder="예: 오늘만 역대급혜택"></div>' +
               '<div class="field"><label for="bb-copy2-' + seq + '">카피 줄2(브랜드명)</label><input type="text" id="bb-copy2-' + seq + '" data-bbinput="copy2" placeholder="예: 설화수!"></div>' +
             '</div>' +
-            '<button type="button" class="btn-remove-entry">이 배너 삭제</button>' +
+            '<button type="button" class="btn-remove-entry">－ 이 배너 삭제</button>' +
           '</div>' +
         '</div>';
 
@@ -2211,7 +2214,9 @@
       card.innerHTML =
         '<div class="banner-type-head">' +
           '<span class="banner-type-label">' + cat.name + '</span>' +
-          '<button type="button" class="btn-remove-type">이 타입 삭제</button>' +
+          '<button type="button" class="btn-remove-type" aria-label="이 타입 삭제">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>' +
+          '</button>' +
         '</div>' +
         '<div class="banner-entry-list"></div>' +
         '<button type="button" class="btn-add-entry">+ 배너 추가</button>';
