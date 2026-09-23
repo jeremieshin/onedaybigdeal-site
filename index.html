@@ -941,6 +941,12 @@
     'c4-brand': {img:'upcoming', x:300, y:589, w:88,  h:27}
   };
 
+  // 혜택 아이콘의 실제 렌더링 x좌표(1/2/3 자리). 물리적 카드 번호(slot)는 BENEFIT_RENDER_SLOT으로 매핑해서 찾아요.
+  var ICON_POS = { 1: 72, 2: 280, 3: 488 };
+  // 혜택 카드가 1~2개만 있을 때 가운데(또는 좌우 대칭)로 보이게, 실제 렌더링 위치(1~3)는
+  // 물리적 카드 번호(slot)와 다를 수 있어요. benefit-controller가 카드를 지우거나 추가할 때마다 값을 갱신해요.
+  var BENEFIT_RENDER_SLOT = {1:1, 2:2, 3:3};
+
   function updateHighlight(id, rowOverride){
     document.querySelectorAll('.ref-highlight').forEach(function(h){ h.style.display = 'none'; });
     var box = HIGHLIGHT_MAP[id];
@@ -971,10 +977,18 @@
   /* ---- 업로드한 이미지를 왼쪽 참고 이미지의 실제 자리에 반영 ---- */
   function positionRefPhotos(){
     document.querySelectorAll('.ref-photo').forEach(function(ph){
-      var box = HIGHLIGHT_MAP[ph.dataset.baseField || ph.dataset.field];
+      var field = ph.dataset.baseField || ph.dataset.field;
+      var box = HIGHLIGHT_MAP[field];
       var dims = box && SECTION_DIMS[box.img];
       if (!box || !dims) return;
-      ph.style.left = (box.x / dims.w * 100) + '%';
+      var x = box.x;
+      // 혜택 아이콘은 혜택 카드가 1~2개만 있을 때 가운데/좌우로 자리가 옮겨질 수 있어요.
+      var benefitIconM = field.match(/^b([1-3])-image$/);
+      if (benefitIconM) {
+        var pos = BENEFIT_RENDER_SLOT[Number(benefitIconM[1])] || Number(benefitIconM[1]);
+        x = ICON_POS[pos];
+      }
+      ph.style.left = (x / dims.w * 100) + '%';
       ph.style.top = (box.y / dims.h * 100) + '%';
       ph.style.width = (box.w / dims.w * 100) + '%';
       ph.style.height = (box.h / dims.h * 100) + '%';
@@ -1154,16 +1168,18 @@
   var BEN_TEXT = {
     tsub: {input:'bt-sub', el:'rt-bt-sub', sample:'단 하루', cx:360, top:80, size:33, w:720, maxW:640},
     tmain: {input:'bt-main', el:'rt-bt-main', sample:'👛 지갑이 열리는 혜택!', cx:360, top:125, size:54, w:720, maxW:640},
-    m1: {input:'b1-main', el:'rt-b1-main', sample:'11pay 적립', cx:151, top:392, size:30, w:208, maxW:200},
-    s1a: {input:'b1-sub1', el:'rt-b1-sub1', sample:'11pay 카드 결제 시', cx:153, top:436, size:24, w:200, maxW:200, lineH:31},
-    s1b: {input:'b1-sub2', el:'rt-b1-sub2', sample:'최대 5% 적립', cx:153, top:467, size:24, w:200, maxW:200, lineH:31},
-    m2: {input:'b2-main', el:'rt-b2-main', sample:'추가 증정', cx:359, top:392, size:30, w:208, maxW:200},
-    s2a: {input:'b2-sub1', el:'rt-b2-sub1', sample:'양반죽 구매 시', cx:360, top:436, size:24, w:200, maxW:200, lineH:31},
-    s2b: {input:'b2-sub2', el:'rt-b2-sub2', sample:'한우사골곰탕 증정', cx:360, top:467, size:24, w:200, maxW:200, lineH:31},
-    m3: {input:'b3-main', el:'rt-b3-main', sample:'T멤버십', cx:567, top:392, size:30, w:208, maxW:200},
-    s3a: {input:'b3-sub1', el:'rt-b3-sub1', sample:'11%', cx:568, top:436, size:24, w:200, maxW:200, lineH:31},
-    s3b: {input:'b3-sub2', el:'rt-b3-sub2', sample:'추가 할인', cx:568, top:467, size:24, w:200, maxW:200, lineH:31}
+    m1: {input:'b1-main', el:'rt-b1-main', sample:'11pay 적립', slot:1, cxType:'main', top:392, size:30, w:208, maxW:200},
+    s1a: {input:'b1-sub1', el:'rt-b1-sub1', sample:'11pay 카드 결제 시', slot:1, cxType:'sub', top:436, size:24, w:200, maxW:200, lineH:31},
+    s1b: {input:'b1-sub2', el:'rt-b1-sub2', sample:'최대 5% 적립', slot:1, cxType:'sub', top:467, size:24, w:200, maxW:200, lineH:31},
+    m2: {input:'b2-main', el:'rt-b2-main', sample:'추가 증정', slot:2, cxType:'main', top:392, size:30, w:208, maxW:200},
+    s2a: {input:'b2-sub1', el:'rt-b2-sub1', sample:'양반죽 구매 시', slot:2, cxType:'sub', top:436, size:24, w:200, maxW:200, lineH:31},
+    s2b: {input:'b2-sub2', el:'rt-b2-sub2', sample:'한우사골곰탕 증정', slot:2, cxType:'sub', top:467, size:24, w:200, maxW:200, lineH:31},
+    m3: {input:'b3-main', el:'rt-b3-main', sample:'T멤버십', slot:3, cxType:'main', top:392, size:30, w:208, maxW:200},
+    s3a: {input:'b3-sub1', el:'rt-b3-sub1', sample:'11%', slot:3, cxType:'sub', top:436, size:24, w:200, maxW:200, lineH:31},
+    s3b: {input:'b3-sub2', el:'rt-b3-sub2', sample:'추가 할인', slot:3, cxType:'sub', top:467, size:24, w:200, maxW:200, lineH:31}
   };
+  // cx 좌표 매핑(실제 렌더링 위치 1~3 기준). BENEFIT_RENDER_SLOT은 위쪽(HIGHLIGHT_MAP 다음)에서 선언해요.
+  var BEN_POS_CX = { main: {1:151, 2:359, 3:567}, sub: {1:153, 2:360, 3:568} };
 
   function renderBenefitText(){
     var row = document.querySelector('.section-row[data-ref="benefit"]');
@@ -1177,9 +1193,14 @@
       if (!el || !inp) return;
       var text = inp.value.replace(/^\s+|\s+$/g, '') || c.sample;
       el.textContent = text;
+      var cx = c.cx;
+      if (c.slot) {
+        var pos = BENEFIT_RENDER_SLOT[c.slot] || c.slot;
+        cx = BEN_POS_CX[c.cxType][pos];
+      }
       var fs = c.size * u, lh = c.lineH ? c.lineH * u : fs;
       el.style.width = (c.w * u) + 'px';
-      el.style.left = ((c.cx - c.w / 2) * u) + 'px';
+      el.style.left = ((cx - c.w / 2) * u) + 'px';
       el.style.top = (c.top * u) + 'px';
       el.style.fontSize = fs + 'px';
       el.style.lineHeight = lh + 'px';
@@ -1235,12 +1256,40 @@
         var el = document.getElementById('rt-b' + i + '-' + suf);
         if (el) el.style.display = visible ? '' : 'none';
       });
-      // 레퍼런스 배경 이미지에 박혀 있는 예시 아이콘까지 완전히 가려서, 카드를 지우면 아이콘도 같이 사라지게 해요.
-      var mask = document.getElementById('ref-mask-' + i);
-      if (mask) mask.style.display = visible ? 'none' : 'block';
+    }
+    // 혜택 카드가 1~2개만 있을 때 가운데(또는 좌우 대칭)로 보이도록, 물리적 카드 번호(slot) ->
+    // 실제 렌더링 위치(1~3)를 계산해서 BENEFIT_RENDER_SLOT에 반영해요.
+    // 1개만 남으면 가운데(2번 자리), 2개 남으면 화면에 보이는 순서대로 좌(1)/우(3) 자리.
+    function computeRenderSlots(){
+      var visible = [];
+      cards.forEach(function(c, idx){ if (c && !c.hidden) visible.push(idx + 1); });
+      var mapping = {1:1, 2:2, 3:3};
+      if (visible.length === 2) {
+        mapping = {};
+        mapping[visible[0]] = 1;
+        mapping[visible[1]] = 3;
+      } else if (visible.length === 1) {
+        mapping = {};
+        mapping[visible[0]] = 2;
+      }
+      [1, 2, 3].forEach(function(i){ BENEFIT_RENDER_SLOT[i] = mapping[i] || i; });
+    }
+    // 레퍼런스 배경 이미지에 박혀 있는 예시 아이콘·카피는 자리(1/2/3)에 고정이라, 그 자리를 차지하는
+    // 카드가 하나도 없을 때만 흰 박스로 덮어서 가려요(차지하는 카드가 있으면 그 카드의 텍스트/아이콘이 위에 그려져요).
+    function updateBenefitMasks(){
+      var occupied = {1:false, 2:false, 3:false};
+      cards.forEach(function(c, idx){
+        if (c && !c.hidden) occupied[BENEFIT_RENDER_SLOT[idx + 1]] = true;
+      });
+      [1, 2, 3].forEach(function(pos){
+        var mask = document.getElementById('ref-mask-' + pos);
+        if (mask) mask.style.display = occupied[pos] ? 'none' : 'block';
+      });
     }
     function refresh(){
       var n = visibleCount();
+      computeRenderSlots();
+      updateBenefitMasks();
       cards.forEach(function(c, idx){
         if (!c || c.hidden) return;
         var slot = idx + 1;
@@ -1255,6 +1304,8 @@
       });
       addBtn.hidden = n >= 3;
       grid.style.gridTemplateColumns = 'repeat(' + Math.max(n, 1) + ', 1fr)';
+      renderBenefitText();
+      positionRefPhotos();
     }
     cards.forEach(function(c, idx){
       if (!c) return;
@@ -1266,7 +1317,6 @@
         c.hidden = true;
         setSpanVisible(i, false);
         clearBenefit(i);
-        renderBenefitText();
         refresh();
       });
     });
@@ -1276,7 +1326,6 @@
       hiddenCard.hidden = false;
       var idx = cards.indexOf(hiddenCard);
       setSpanVisible(idx + 1, true);
-      renderBenefitText();
       refresh();
     });
     refresh();
