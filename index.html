@@ -793,10 +793,11 @@
     return '혜택' + n;
   }
 
-  /* 라이브방송은 피그마 PC 레이어명이 "라이브방송01/02/03"(첫 번째도 접미사+0채움)이라
-     모바일("라이브방송/라이브방송2/라이브방송3")과 표기 방식이 달라요. 시트의 PC_ 라벨만
-     이 함수로 따로 만들어서 피그마 레이어명과 정확히 맞춰요. */
-  function pcSectionLabel(displaySection){
+  /* 라이브방송은 피그마 레이어명이 MO/PC 둘 다 "라이브방송01/02/03"(첫 번째도 접미사+0채움)
+     방식이라, 다른 섹션(예: 특가상품/특가상품2/특가상품3)과 표기 방식이 달라요. 시트 라벨을
+     만들 때 MO_/PC_ 양쪽 다 이 함수를 거쳐서 피그마 레이어명과 정확히 맞춰요. 라이브방송이
+     아닌 섹션은 그대로 반환하므로 다른 섹션에 적용해도 안전해요. */
+  function sheetSectionLabel(displaySection){
     var m = /^라이브방송(\d*)$/.exec(displaySection);
     if (!m) return displaySection;
     var n = m[1] ? Number(m[1]) : 1;
@@ -2041,12 +2042,12 @@
           values.push(value);
         }
         // 같은 카테고리 안에서 MO끼리, PC끼리 묶어서 넣습니다.
+        var sheetSection = sheetSectionLabel(displaySection);
         for (var m = 0; m < group.fields.length; m++) {
-          rows.push(['MO_' + displaySection + '_' + group.fields[m].name, values[m]]);
+          rows.push(['MO_' + sheetSection + '_' + group.fields[m].name, values[m]]);
         }
-        var pcSection = pcSectionLabel(displaySection);
         for (var q = 0; q < group.fields.length; q++) {
-          rows.push(['PC_' + pcSection + '_' + group.fields[q].name, values[q]]);
+          rows.push(['PC_' + sheetSection + '_' + group.fields[q].name, values[q]]);
         }
       }
 
