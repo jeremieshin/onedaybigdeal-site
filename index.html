@@ -48,6 +48,10 @@
     .section-row{display:flex;flex-direction:column;}
     .ref-panel{max-width:420px;margin:0 auto 16px;}
   }
+  .repeat-list{display:flex;flex-direction:column;}
+  .repeat-list .section-row + .section-row{margin-top:40px;padding-top:40px;border-top:1px solid var(--line);}
+  .btn-add-row{margin-top:24px;}
+  .btn-remove-row{margin-top:4px;align-self:flex-start;}
 
   .ref-panel{display:flex;flex-direction:column;}
   .ref-img-wrap{
@@ -487,6 +491,7 @@
 
   <hr class="row-divider">
 
+  <div class="repeat-list" id="teaser-list" data-base-label="특가상품">
   <div class="section-row" data-ref="teaser">
     <div class="ref-panel">
       <div class="ref-img-wrap">
@@ -514,11 +519,15 @@
         </label>
         <input type="file" accept="image/*" id="t-image" class="visually-hidden">
       </div>
+      <button type="button" class="btn-remove-entry btn-remove-row" hidden>－ 이 특가상품 삭제</button>
     </div>
   </div>
+  </div>
+  <button type="button" class="btn-add-type btn-add-row" id="btn-add-teaser">+ 특가상품 추가</button>
 
   <hr class="row-divider">
 
+  <div class="repeat-list" id="live-list" data-base-label="라이브방송">
   <div class="section-row" data-ref="live">
     <div class="ref-panel">
       <div class="ref-img-wrap">
@@ -548,8 +557,11 @@
         </label>
         <input type="file" accept="image/*" id="lv-image" class="visually-hidden">
       </div>
+      <button type="button" class="btn-remove-entry btn-remove-row" hidden>－ 이 라이브방송 삭제</button>
     </div>
   </div>
+  </div>
+  <button type="button" class="btn-add-type btn-add-row" id="btn-add-live">+ 라이브방송 추가</button>
 
   <hr class="row-divider">
 
@@ -914,11 +926,11 @@
     'c4-brand': {img:'upcoming', x:300, y:589, w:88,  h:27}
   };
 
-  function updateHighlight(id){
+  function updateHighlight(id, rowOverride){
     document.querySelectorAll('.ref-highlight').forEach(function(h){ h.style.display = 'none'; });
     var box = HIGHLIGHT_MAP[id];
     if (!box) return;
-    var row = document.querySelector('.section-row[data-ref="' + box.img + '"]');
+    var row = rowOverride || document.querySelector('.section-row[data-ref="' + box.img + '"]');
     if (!row) return;
     var hl = row.querySelector('.ref-highlight');
     var dims = SECTION_DIMS[box.img];
@@ -931,7 +943,11 @@
   }
 
   document.addEventListener('focusin', function(e){
-    if (e.target && e.target.id) updateHighlight(e.target.id);
+    // 특가상품/라이브방송처럼 추가된 카드(예: t-title2)는 원래 id(t-title) 기준으로 하이라이트를 찾아요.
+    if (e.target && e.target.id) {
+      var baseId = e.target.dataset.baseId || e.target.id;
+      updateHighlight(baseId, e.target.closest('.section-row'));
+    }
   });
   document.addEventListener('focusout', function(){
     document.querySelectorAll('.ref-highlight').forEach(function(h){ h.style.display = 'none'; });
@@ -940,7 +956,7 @@
   /* ---- 업로드한 이미지를 왼쪽 참고 이미지의 실제 자리에 반영 ---- */
   function positionRefPhotos(){
     document.querySelectorAll('.ref-photo').forEach(function(ph){
-      var box = HIGHLIGHT_MAP[ph.dataset.field];
+      var box = HIGHLIGHT_MAP[ph.dataset.baseField || ph.dataset.field];
       var dims = box && SECTION_DIMS[box.img];
       if (!box || !dims) return;
       ph.style.left = (box.x / dims.w * 100) + '%';
@@ -1262,27 +1278,28 @@
   };
 
   function renderTeaserText(){
-    var row = document.querySelector('.section-row[data-ref="teaser"]');
-    if (!row) return;
-    var wrap = row.querySelector('.ref-img-wrap');
-    var u = wrap.clientWidth / 720;
-    if (!u) return;
-    Object.keys(TEASER_TEXT).forEach(function(key){
-      var c = TEASER_TEXT[key];
-      var el = $(c.el), inp = $(c.input);
-      if (!el || !inp) return;
-      var text = inp.value.replace(/^\s+|\s+$/g, '') || c.sample;
-      var inner = el.querySelector('.rt-in');
-      var tn = key === 'cta' ? el.querySelector('.rt-cta-txt') : inner;
-      tn.textContent = text;
-      el.style.top = (c.top * u) + 'px';
-      var fs = c.size * u;
-      el.style.fontSize = fs + 'px';
-      var w = inner.getBoundingClientRect().width, max = c.maxW * u;
-      if (w > max) {
-        fs = Math.max(fs * max / w, fs * 0.6);
+    document.querySelectorAll('.section-row[data-ref="teaser"]').forEach(function(row){
+      var wrap = row.querySelector('.ref-img-wrap');
+      var u = wrap.clientWidth / 720;
+      if (!u) return;
+      var suffix = row.dataset.suffix || ''; // 추가된 특가상품(2번째~)은 필드 id 뒤에 숫자가 붙어요.
+      Object.keys(TEASER_TEXT).forEach(function(key){
+        var c = TEASER_TEXT[key];
+        var el = document.getElementById(c.el + suffix), inp = document.getElementById(c.input + suffix);
+        if (!el || !inp) return;
+        var text = inp.value.replace(/^\s+|\s+$/g, '') || c.sample;
+        var inner = el.querySelector('.rt-in');
+        var tn = key === 'cta' ? el.querySelector('.rt-cta-txt') : inner;
+        tn.textContent = text;
+        el.style.top = (c.top * u) + 'px';
+        var fs = c.size * u;
         el.style.fontSize = fs + 'px';
-      }
+        var w = inner.getBoundingClientRect().width, max = c.maxW * u;
+        if (w > max) {
+          fs = Math.max(fs * max / w, fs * 0.6);
+          el.style.fontSize = fs + 'px';
+        }
+      });
     });
   }
   ['t-title','t-tag','t-cta'].forEach(function(id){
@@ -1303,35 +1320,36 @@
 
   function renderRowText(){
     ROW_TEXT.forEach(function(c){
-      var row = document.querySelector('.section-row[data-ref="' + c.sec + '"]');
-      if (!row) return;
-      var wrap = row.querySelector('.ref-img-wrap');
-      var u = wrap.clientWidth / 720;
-      var el = $(c.el), inp = $(c.input);
-      if (!u || !el || !inp) return;
-      var text = inp.value.replace(/^\s+|\s+$/g, '') || c.sample;
-      var inner = el.querySelector('.rt-in');
-      if (c.kind === 'two') {
-        var m = text.match(/^(\S+)\s+([\s\S]+)$/);
-        el.querySelector('.rt-d1').textContent = m ? m[1] : text;
-        el.querySelector('.rt-d2').textContent = m ? m[2] : '';
-      } else {
-        inner.textContent = text;
-      }
-      el.style.top = (c.top * u) + 'px';
-      if (c.cx !== undefined) {
-        el.style.left = ((c.cx - c.box / 2) * u) + 'px';
-        el.style.width = (c.box * u) + 'px';
-      } else {
-        el.style.left = (c.left * u) + 'px';
-      }
-      var fs = c.size * u;
-      el.style.fontSize = fs + 'px';
-      var w = inner.getBoundingClientRect().width, max = c.maxW * u;
-      if (w > max) {
-        fs = Math.max(fs * max / w, fs * 0.5);
+      document.querySelectorAll('.section-row[data-ref="' + c.sec + '"]').forEach(function(row){
+        var wrap = row.querySelector('.ref-img-wrap');
+        var u = wrap.clientWidth / 720;
+        var suffix = row.dataset.suffix || ''; // 추가된 라이브방송(2번째~)은 필드 id 뒤에 숫자가 붙어요.
+        var el = document.getElementById(c.el + suffix), inp = document.getElementById(c.input + suffix);
+        if (!u || !el || !inp) return;
+        var text = inp.value.replace(/^\s+|\s+$/g, '') || c.sample;
+        var inner = el.querySelector('.rt-in');
+        if (c.kind === 'two') {
+          var m = text.match(/^(\S+)\s+([\s\S]+)$/);
+          el.querySelector('.rt-d1').textContent = m ? m[1] : text;
+          el.querySelector('.rt-d2').textContent = m ? m[2] : '';
+        } else {
+          inner.textContent = text;
+        }
+        el.style.top = (c.top * u) + 'px';
+        if (c.cx !== undefined) {
+          el.style.left = ((c.cx - c.box / 2) * u) + 'px';
+          el.style.width = (c.box * u) + 'px';
+        } else {
+          el.style.left = (c.left * u) + 'px';
+        }
+        var fs = c.size * u;
         el.style.fontSize = fs + 'px';
-      }
+        var w = inner.getBoundingClientRect().width, max = c.maxW * u;
+        if (w > max) {
+          fs = Math.max(fs * max / w, fs * 0.5);
+          el.style.fontSize = fs + 'px';
+        }
+      });
     });
   }
   ROW_TEXT.forEach(function(c){
@@ -1348,6 +1366,140 @@
     });
   });
   renderRowText();
+
+  /* ---- 특가상품 / 라이브방송: 여러 개 추가·삭제 (레이어명은 뒤에 숫자만 붙어요: 특가상품, 특가상품2, 특가상품3...) ---- */
+  function makeRepeatable(opts){
+    // opts: {listId, addBtnId, baseLabel, fieldDefs:[{base,name,type}], renderFn}
+    var list = document.getElementById(opts.listId);
+    var addBtn = document.getElementById(opts.addBtnId);
+    if (!list || !addBtn) return;
+    var template = list.children[0];
+    if (!template) return;
+    var counter = 1; // 새로 만들 때마다 올라가는 고유 번호(삭제돼도 되돌리지 않아요, 화면에 보이는 번호는 renumber()가 따로 매겨요)
+
+    function fieldsFor(suffix){
+      return opts.fieldDefs.map(function(f){ return { id: f.base + suffix, name: f.name, type: f.type }; });
+    }
+
+    function renumber(){
+      var rows = Array.prototype.slice.call(list.children);
+      rows.forEach(function(row, idx){
+        var label = idx === 0 ? opts.baseLabel : opts.baseLabel + (idx + 1);
+        if (row._fieldGroup) {
+          row._fieldGroup.section = label;
+          row._fieldGroup.fields = fieldsFor(row.dataset.suffix || '');
+        }
+        var h2 = row.querySelector('.card-head h2');
+        if (h2) h2.textContent = label;
+        var delBtn = row.querySelector('.btn-remove-row');
+        if (delBtn) delBtn.hidden = rows.length <= 1;
+      });
+    }
+
+    function wireRow(row, suffix){
+      row.querySelectorAll('input[type=file]').forEach(function(inp){
+        var photo = row.querySelector('.ref-photo[data-field="' + inp.id + '"]');
+        if (!photo) return;
+        inp.addEventListener('change', function(){
+          var f = inp.files && inp.files[0];
+          if (f) {
+            var url = URL.createObjectURL(f);
+            photo.src = url;
+            photo.style.display = 'block';
+          } else {
+            photo.removeAttribute('src');
+            photo.style.display = 'none';
+          }
+        });
+      });
+      row.querySelectorAll('input[type=text]').forEach(function(inp){
+        inp.addEventListener('input', opts.renderFn);
+      });
+      var delBtn = row.querySelector('.btn-remove-row');
+      if (delBtn) delBtn.addEventListener('click', function(){ removeRow(row); });
+    }
+
+    function removeRow(row){
+      if (list.children.length <= 1) return;
+      if (row._fieldGroup) {
+        var idx = FIELD_MAP.indexOf(row._fieldGroup);
+        if (idx !== -1) FIELD_MAP.splice(idx, 1);
+      }
+      row.remove();
+      renumber();
+      opts.renderFn();
+      if (typeof syncRowHeights === 'function') syncRowHeights();
+    }
+
+    // instance 1(원래 있던 카드)을 FIELD_MAP의 기존 항목과 연결
+    template.dataset.suffix = '';
+    template._fieldGroup = FIELD_MAP.filter(function(g){ return g.section === opts.baseLabel; })[0] || null;
+    wireRow(template, '');
+
+    addBtn.addEventListener('click', function(){
+      counter++;
+      var suffix = String(counter);
+      var clone = template.cloneNode(true);
+      clone.dataset.suffix = suffix;
+      clone.hidden = false;
+
+      clone.querySelectorAll('[id]').forEach(function(el){
+        var baseId = el.id;
+        el.dataset.baseId = baseId;
+        el.id = baseId + suffix;
+      });
+      clone.querySelectorAll('label[for]').forEach(function(el){
+        el.setAttribute('for', el.getAttribute('for') + suffix);
+      });
+      clone.querySelectorAll('[data-field]').forEach(function(el){
+        el.dataset.baseField = el.dataset.field;
+        el.dataset.field = el.dataset.field + suffix;
+      });
+      // 값 초기화(원본 카드는 비어있는 게 정상이지만, 혹시 몰라 한 번 더 비워요)
+      clone.querySelectorAll('input[type=text]').forEach(function(el){ el.value = ''; });
+      clone.querySelectorAll('input[type=file]').forEach(function(el){ el.value = ''; });
+      clone.querySelectorAll('.upload-filename').forEach(function(el){ el.textContent = ''; });
+      clone.querySelectorAll('.ref-photo').forEach(function(el){ el.removeAttribute('src'); el.style.display = 'none'; });
+
+      var lastRow = list.children[list.children.length - 1];
+      var afterGroup = lastRow && lastRow._fieldGroup;
+      var group = { section: opts.baseLabel + suffix, fields: fieldsFor(suffix) };
+      var afterIdx = afterGroup ? FIELD_MAP.indexOf(afterGroup) : -1;
+      if (afterIdx === -1) FIELD_MAP.push(group); else FIELD_MAP.splice(afterIdx + 1, 0, group);
+      clone._fieldGroup = group;
+
+      list.appendChild(clone);
+      wireRow(clone, suffix);
+      positionRefPhotos();
+      renumber();
+      opts.renderFn();
+      if (typeof syncRowHeights === 'function') syncRowHeights();
+    });
+
+    renumber();
+  }
+
+  makeRepeatable({
+    listId: 'teaser-list', addBtnId: 'btn-add-teaser', baseLabel: '특가상품',
+    fieldDefs: [
+      {base:'t-title', name:'메인카피', type:'text'},
+      {base:'t-tag', name:'서브카피', type:'text'},
+      {base:'t-cta', name:'CTA텍스트', type:'text'},
+      {base:'t-image', name:'이미지', type:'image'}
+    ],
+    renderFn: renderTeaserText
+  });
+  makeRepeatable({
+    listId: 'live-list', addBtnId: 'btn-add-live', baseLabel: '라이브방송',
+    fieldDefs: [
+      {base:'lv-date', name:'날짜', type:'text'},
+      {base:'lv-time', name:'시간', type:'text'},
+      {base:'lv-title', name:'카드타이틀', type:'text'},
+      {base:'lv-sub', name:'서브카피', type:'text'},
+      {base:'lv-image', name:'썸네일이미지', type:'image'}
+    ],
+    renderFn: renderRowText
+  });
 
   function fileToBase64(file){
     return new Promise(function(resolve, reject){
