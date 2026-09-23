@@ -51,7 +51,14 @@
   .repeat-list{display:flex;flex-direction:column;}
   .repeat-list .section-row + .section-row{margin-top:40px;padding-top:40px;border-top:1px solid var(--line);}
   .btn-add-row{margin-top:24px;}
-  .btn-remove-row{margin-top:4px;align-self:flex-start;}
+  .btn-remove-row{
+    display:flex;align-items:center;justify-content:center;flex:none;
+    width:14px;height:14px;padding:0;border-radius:3px;
+    font:inherit;color:var(--muted);background:var(--surface);border:1px solid var(--line-strong);cursor:pointer;
+  }
+  .btn-remove-row svg{width:8px;height:8px;}
+  .btn-remove-row:hover{border-color:var(--accent);color:var(--accent);}
+  .btn-remove-row[hidden]{display:none;}
 
   .ref-panel{display:flex;flex-direction:column;}
   .ref-img-wrap{
@@ -505,7 +512,12 @@
       <div class="ref-bottom-pad"></div>
     </div>
     <div class="section-form">
-      <div class="card-head"><h2>특가상품</h2></div>
+      <div class="card-head">
+        <h2>특가상품</h2>
+        <button type="button" class="btn-remove-row" hidden aria-label="이 특가상품 삭제">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+        </button>
+      </div>
       <div class="field-row">
         <div class="field"><label for="t-title">메인카피</label><input type="text" id="t-title" placeholder="예: 설화수 지함보 스페셜 추석기획세트"></div>
         <div class="field"><label for="t-tag">서브카피</label><input type="text" id="t-tag" placeholder="예: #윤조에센스#자음2종외 BEST"></div>
@@ -519,7 +531,6 @@
         </label>
         <input type="file" accept="image/*" id="t-image" class="visually-hidden">
       </div>
-      <button type="button" class="btn-remove-entry btn-remove-row" hidden>－ 이 특가상품 삭제</button>
     </div>
   </div>
   </div>
@@ -542,7 +553,12 @@
       <div class="ref-bottom-pad"></div>
     </div>
     <div class="section-form">
-      <div class="card-head"><h2>라이브방송</h2></div>
+      <div class="card-head">
+        <h2>라이브방송</h2>
+        <button type="button" class="btn-remove-row" hidden aria-label="이 라이브방송 삭제">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+        </button>
+      </div>
       <div class="field-row">
         <div class="field"><label for="lv-date">날짜</label><input type="text" id="lv-date" placeholder="예: 8월 20일(목)"></div>
         <div class="field"><label for="lv-time">시간</label><input type="text" id="lv-time" placeholder="예: 12:00"></div>
@@ -557,7 +573,6 @@
         </label>
         <input type="file" accept="image/*" id="lv-image" class="visually-hidden">
       </div>
-      <button type="button" class="btn-remove-entry btn-remove-row" hidden>－ 이 라이브방송 삭제</button>
     </div>
   </div>
   </div>
