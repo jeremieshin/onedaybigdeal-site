@@ -793,6 +793,16 @@
     return '혜택' + n;
   }
 
+  /* 라이브방송은 피그마 PC 레이어명이 "라이브방송01/02/03"(첫 번째도 접미사+0채움)이라
+     모바일("라이브방송/라이브방송2/라이브방송3")과 표기 방식이 달라요. 시트의 PC_ 라벨만
+     이 함수로 따로 만들어서 피그마 레이어명과 정확히 맞춰요. */
+  function pcSectionLabel(displaySection){
+    var m = /^라이브방송(\d*)$/.exec(displaySection);
+    if (!m) return displaySection;
+    var n = m[1] ? Number(m[1]) : 1;
+    return '라이브방송' + (n < 10 ? '0' + n : String(n));
+  }
+
   document.querySelectorAll('input[type=file]').forEach(function(inp){
     inp.addEventListener('change', function(){
       var f = inp.files && inp.files[0];
@@ -2034,8 +2044,9 @@
         for (var m = 0; m < group.fields.length; m++) {
           rows.push(['MO_' + displaySection + '_' + group.fields[m].name, values[m]]);
         }
+        var pcSection = pcSectionLabel(displaySection);
         for (var q = 0; q < group.fields.length; q++) {
-          rows.push(['PC_' + displaySection + '_' + group.fields[q].name, values[q]]);
+          rows.push(['PC_' + pcSection + '_' + group.fields[q].name, values[q]]);
         }
       }
 
