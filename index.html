@@ -48,7 +48,7 @@
     .section-row{display:flex;flex-direction:column;}
     .ref-panel{max-width:420px;margin:0 auto 16px;}
   }
-  /* 배너요청서(빌보드베너)만 예시 이미지를 크게: 340px -> 408px(1.2배, 09-25) -> 490px(1.2배 추가, 09-28), 모바일 420px -> 504px -> 605px */
+  /* 배너요청서(빌보드배너)만 예시 이미지를 크게: 340px -> 408px(1.2배, 09-25) -> 490px(1.2배 추가, 09-28), 모바일 420px -> 504px -> 605px */
   .section-row[data-ref^="billboard"]{grid-template-columns:490px 1fr;}
   @media (max-width:860px){
     .section-row[data-ref^="billboard"] .ref-panel{max-width:605px;}
@@ -119,7 +119,7 @@
   /* 메인상단2 (원본 720x904 기준) */
   .rt2-brand{font-weight:900;color:#000;letter-spacing:0em;}
   .rt2-sub{font-weight:600;color:#000;letter-spacing:-0.02em;}
-  /* 배너요청서 - 빌보드베너: 글자 없는 이미지 위 텍스트 레이어 (원본 720x360 기준, banner_block.js에서 생성) */
+  /* 배너요청서 - 빌보드배너: 글자 없는 이미지 위 텍스트 레이어 (원본 720x360 기준, banner_block.js에서 생성) */
   .bbrt-copy1,.bbrt-copy2{font-weight:800;color:#111;letter-spacing:-0.02em;}
   .bbrt-coupon1,.bbrt-coupon2{font-weight:800;color:#111;letter-spacing:-0.01em;text-align:center;}
   /* 쿠폰1/2 흰 뱃지는 모델컷/배경이미지를 올린 뒤에도 계속 보이는 UI 칩이라 살짝 둥근 모서리를 줌 */
@@ -2596,7 +2596,7 @@
     }
     setTimeout(function(){ label.textContent = original; }, 1500);
   });
-  /* ===== 배너 요청서: 고정 카탈로그에서 타입 선택, 빌보드베너는 실제 레퍼런스+구조화 입력 ===== */
+  /* ===== 배너 요청서: 고정 카탈로그에서 타입 선택, 빌보드배너는 실제 레퍼런스+구조화 입력 ===== */
   (function(){
     var typeList = document.getElementById('banner-type-list');
     var emptyMsg = document.getElementById('banner-empty-msg');
@@ -2605,7 +2605,7 @@
     if (!typeList || !addTypeBtn || !pickerWrap) return;
 
     var CATALOG = [
-      {key:'billboard',     name:'빌보드베너',             ready:true},
+      {key:'billboard',     name:'빌보드배너',             ready:true},
       {key:'todaybrand',    name:'오늘의 브랜드',           ready:false},
       {key:'smallpopup',    name:'스몰팝업',               ready:false},
       {key:'detail',        name:'상품상세배너',           ready:false},
@@ -2641,9 +2641,16 @@
        실시간 텍스트를 그려요. maskBox/textBox는 레퍼런스 이미지를 직접 잘라 실측한 좌표(근접-검정 픽셀 기준). */
     var BILLBOARD_TEXT = {
       /* 카피1 마스크 높이(h)를 원래 글자 높이(42)보다 카피2 시작 지점(y:259)까지 여유있게 늘려서(58),
-         카피1/카피2 사이 빈틈으로 배경 사진이 살짝 비쳐 점선처럼 보이던 이음매를 없앴어요(2026-09-28). */
-      copy1:   {sample:'오늘만 역대급혜택', maskBox:{x:47,  y:204, w:308, h:58}, textBox:{x:49,  y:206, w:305, h:40}, size:31, center:false, maskColor:'#e0c8bb'},
-      copy2:   {sample:'설화수!',           maskBox:{x:47,  y:259, w:124, h:44}, textBox:{x:49,  y:261, w:122, h:40}, size:31, center:false, maskColor:'#e0c8bb'}
+         카피1/카피2 사이 빈틈으로 배경 사진이 살짝 비쳐 점선처럼 보이던 이음매를 없앴어요(2026-09-28,
+         마스크 자체는 이후 베이스 사진 교체로 더 이상 안 씀 — maskBox/maskColor는 남겨만 둠).
+         2026-09-28(8차): 사용자가 실제 빌보드배너 가이드(720x360과 동일 비율의 공식 예시 이미지)를
+         전달하면서 "카피가 너무 작게 적혀 있다"고 지적 → 가이드 이미지를 PIL로 직접 픽셀 실측(글자
+         잉크 높이·너비를 다크 픽셀 bbox로 측정 후 720 좌표계로 환산)해서 size를 31->40으로, 그에 맞춰
+         가로로 넉넉해진 텍스트가 shrink-to-fit에 걸리지 않도록 textBox.w도 305/122 -> 340으로 늘림.
+         샘플 문구도 가이드와 동일하게 "일이삼사오육칠팔"(정확히 8자 — 입력창 안내문구 "최대 글자 수 :
+         한 줄당 8자"와 짝이 맞음)로 통일. */
+      copy1:   {sample:'일이삼사오육칠팔', maskBox:{x:47,  y:204, w:308, h:58}, textBox:{x:49,  y:206, w:340, h:40}, size:40, center:false, maskColor:'#e0c8bb'},
+      copy2:   {sample:'일이삼사오육칠팔', maskBox:{x:47,  y:259, w:124, h:44}, textBox:{x:49,  y:261, w:340, h:40}, size:40, center:false, maskColor:'#e0c8bb'}
     };
     /* 쿠폰1/2는 자유 텍스트가 아니라 "뱃지 먼저 선택 -> 값 입력" 방식이라 위 BILLBOARD_TEXT가 아니라
        아래 COUPON_BADGE_TYPES + renderCouponBadgeSlot()에서 따로 처리해요. */
@@ -2828,7 +2835,7 @@
       openTypeMenu();
     });
 
-    /* ---- 빌보드베너: 포커스한 필드가 레퍼런스 위 어디인지 하이라이트로 표시 ----
+    /* ---- 빌보드배너: 포커스한 필드가 레퍼런스 위 어디인지 하이라이트로 표시 ----
        기존 원데이빅딜 섹션들과 똑같이, 공유 스코프의 HIGHLIGHT_MAP / SECTION_DIMS 에
        이 배너 전용 항목을 등록해서 기존 updateHighlight()(focusin 전역 리스너)가 그대로 동작하게 함 ---- */
     function registerHighlight(seq){
@@ -2936,7 +2943,7 @@
             '<div class="ref-bottom-pad"></div>' +
           '</div>' +
           '<div class="section-form">' +
-            '<div class="card-head"><h2>빌보드베너 ' + seq + '</h2></div>' +
+            '<div class="card-head"><h2>빌보드배너 ' + seq + '</h2></div>' +
             '<div class="field-row single">' +
               '<label class="upload" for="bb-image-' + seq + '">' +
                 '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="10" r="1.4"/><path d="M21 16l-5.5-5.5L9 17"/></svg>' +
@@ -2962,8 +2969,8 @@
               '</div>' +
             '</div>' +
             '<div class="field-row">' +
-              '<div class="field"><label for="bb-copy1-' + seq + '">카피 줄1</label><input type="text" id="bb-copy1-' + seq + '" data-bbinput="copy1" placeholder="예: 오늘만 역대급혜택"></div>' +
-              '<div class="field"><label for="bb-copy2-' + seq + '">카피 줄2(브랜드명)</label><input type="text" id="bb-copy2-' + seq + '" data-bbinput="copy2" placeholder="예: 설화수!"></div>' +
+              '<div class="field"><label for="bb-copy1-' + seq + '">카피 줄1</label><input type="text" id="bb-copy1-' + seq + '" data-bbinput="copy1" placeholder="최대 글자 수 : 한 줄당 8자"></div>' +
+              '<div class="field"><label for="bb-copy2-' + seq + '">카피 줄2(브랜드명)</label><input type="text" id="bb-copy2-' + seq + '" data-bbinput="copy2" placeholder="최대 글자 수 : 한 줄당 8자"></div>' +
             '</div>' +
             '<button type="button" class="btn-remove-entry">－ 이 배너 삭제</button>' +
           '</div>' +
@@ -3062,7 +3069,7 @@
 
     updateEmptyState();
 
-    /* 리사이즈 시 활성화된 빌보드베너 엔트리 전부 텍스트 위치 재계산(로고 배지는 %기반이라 재계산 불필요) */
+    /* 리사이즈 시 활성화된 빌보드배너 엔트리 전부 텍스트 위치 재계산(로고 배지는 %기반이라 재계산 불필요) */
     window.addEventListener('resize', function(){
       document.querySelectorAll('.section-row[data-ref^="billboard"]').forEach(function(row){
         var seq = row.getAttribute('data-ref').replace('billboard', '');
