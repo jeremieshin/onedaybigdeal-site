@@ -43,7 +43,7 @@
 
   .row-divider{border:none;border-top:1px solid var(--line);margin:40px 0;}
 
-  .section-row{display:grid;grid-template-columns:340px 1fr;gap:72px;align-items:start;}
+  .section-row{display:grid;grid-template-columns:340px 1fr;column-gap:72px;row-gap:30px;align-items:start;}
   @media (max-width:860px){
     .section-row{display:flex;flex-direction:column;}
     .ref-panel{max-width:420px;margin:0 auto 16px;}
@@ -152,7 +152,7 @@
      "행 전체 헤더"예요. section-row가 grid이므로 1~-1 컬럼을 다 차지하게 하고 맨 앞
      자식으로 두면, grid 자동배치 규칙상 ref-panel/section-form이 자동으로 다음 줄
      (좌/우 두 칸)로 내려가서 정확히 원하는 위치에 놓여요. */
-  .card-head{display:flex;align-items:center;gap:10px;margin-bottom:13px;grid-column:1/-1;}
+  .card-head{display:flex;align-items:center;gap:10px;margin-bottom:0;grid-column:1/-1;}
   .card-head h2{font-size:22.3px;margin:0;letter-spacing:-0.005em;}
 
   .field-row{display:flex;flex-direction:column;gap:14px;}
