@@ -2305,6 +2305,44 @@
     return sections;
   }
 
+  /** 대제목·소제목 왼쪽 세로 띠에 쓰는 그라데이션(피그마에서 받은 컬러 스탑: 0% FF5A2E → 52% FF0038 → 100% FF00EF).
+      pptxgenjs 도형은 자체 그라데이션 채우기를 지원하지 않아서, 얇은 색 띠를 여러 장 세로로 겹쳐 쌓아
+      그라데이션처럼 보이게 흉내내요(색상은 두 스탑 사이를 선형 보간). */
+  var PLAN_GRADIENT_STOPS = [
+    { pos: 0,    color: 'FF5A2E' },
+    { pos: 0.52, color: 'FF0038' },
+    { pos: 1,    color: 'FF00EF' }
+  ];
+  function hexToRgb(hex){ return [parseInt(hex.slice(0,2),16), parseInt(hex.slice(2,4),16), parseInt(hex.slice(4,6),16)]; }
+  function rgbToHex(rgb){
+    return rgb.map(function(v){ return ('0' + Math.max(0, Math.min(255, Math.round(v))).toString(16)).slice(-2); }).join('').toUpperCase();
+  }
+  function gradientColorAt(t){
+    for (var i = 0; i < PLAN_GRADIENT_STOPS.length - 1; i++) {
+      var s0 = PLAN_GRADIENT_STOPS[i], s1 = PLAN_GRADIENT_STOPS[i + 1];
+      if (t >= s0.pos && t <= s1.pos) {
+        var localT = (t - s0.pos) / ((s1.pos - s0.pos) || 1);
+        var c0 = hexToRgb(s0.color), c1 = hexToRgb(s1.color);
+        return rgbToHex([
+          c0[0] + (c1[0] - c0[0]) * localT,
+          c0[1] + (c1[1] - c0[1]) * localT,
+          c0[2] + (c1[2] - c0[2]) * localT
+        ]);
+      }
+    }
+    return PLAN_GRADIENT_STOPS[PLAN_GRADIENT_STOPS.length - 1].color;
+  }
+  function addGradientBar(pptx, slide, x, y, w, h, steps){
+    steps = steps || 40;
+    var stepH = h / steps;
+    for (var i = 0; i < steps; i++) {
+      var t = (i + 0.5) / steps;
+      var color = gradientColorAt(t);
+      // 밴드 사이에 흰 실선이 비치지 않도록 높이를 살짝 겹쳐요.
+      slide.addShape(pptx.ShapeType.rect, { x: x, y: y + i * stepH, w: w, h: stepH + 0.004, fill: { color: color }, line: { color: color, width: 0 } });
+    }
+  }
+
   /** 슬라이드(.pptx) 만들기. 화면은 16:9 와이드. */
   async function buildPlanPptx(sections, info){
     var C = { ink: '111111', muted: '777777', line: 'DDDDDD', head: 'F1F1F1', accent: 'FF5A2E', hint: '9A9A9A' };
@@ -2315,7 +2353,7 @@
 
     function frame(slide, title, no){
       slide.background = { color: 'FFFFFF' };
-      slide.addShape(pptx.ShapeType.rect, { x: 0.6, y: 0.5, w: 0.09, h: 0.55, fill: { color: C.accent }, line: { color: C.accent, width: 0 } });
+      addGradientBar(pptx, slide, 0.6, 0.5, 0.09, 0.55, 18);
       slide.addText(title, { x: 0.85, y: 0.45, w: 8, h: 0.65, fontFace: PLAN_FONT, fontSize: 24, bold: true, color: C.ink, valign: 'middle', margin: 0 });
       slide.addText('원데이빅딜 카피·이미지 기획서', { x: 8.3, y: 0.5, w: 4.43, h: 0.5, fontFace: PLAN_FONT, fontSize: 10, color: C.hint, align: 'right', valign: 'middle', margin: 0 });
       slide.addText(no + ' / ' + total, { x: 11.7, y: 7.05, w: 1.03, h: 0.3, fontFace: PLAN_FONT, fontSize: 9, color: C.hint, align: 'right', margin: 0 });
@@ -2329,7 +2367,7 @@
     // ---- 표지 ----
     var cover = pptx.addSlide();
     cover.background = { color: 'FFFFFF' };
-    cover.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 0.28, h: 7.5, fill: { color: C.accent }, line: { color: C.accent, width: 0 } });
+    addGradientBar(pptx, cover, 0, 0, 0.28, 7.5);
     cover.addText('원데이빅딜', { x: 0.9, y: 0.85, w: 6, h: 0.45, fontFace: PLAN_FONT, fontSize: 16, bold: true, color: C.accent, margin: 0 });
     cover.addText('카피·이미지 기획서', { x: 0.9, y: 1.35, w: 8, h: 0.9, fontFace: PLAN_FONT, fontSize: 40, bold: true, color: C.ink, margin: 0 });
     cover.addText(info.headline || '', { x: 0.9, y: 2.3, w: 8, h: 0.6, fontFace: PLAN_FONT, fontSize: 22, color: C.ink, margin: 0 });
