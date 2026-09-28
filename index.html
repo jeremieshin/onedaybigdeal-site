@@ -48,10 +48,10 @@
     .section-row{display:flex;flex-direction:column;}
     .ref-panel{max-width:420px;margin:0 auto 16px;}
   }
-  /* 배너요청서(빌보드베너)만 예시 이미지를 1.2배 크게(340px -> 408px, 모바일 420px -> 504px) */
-  .section-row[data-ref^="billboard"]{grid-template-columns:408px 1fr;}
+  /* 배너요청서(빌보드베너)만 예시 이미지를 크게: 340px -> 408px(1.2배, 09-25) -> 490px(1.2배 추가, 09-28), 모바일 420px -> 504px -> 605px */
+  .section-row[data-ref^="billboard"]{grid-template-columns:490px 1fr;}
   @media (max-width:860px){
-    .section-row[data-ref^="billboard"] .ref-panel{max-width:504px;}
+    .section-row[data-ref^="billboard"] .ref-panel{max-width:605px;}
   }
   .repeat-list{display:flex;flex-direction:column;}
   .repeat-list .section-row + .section-row{margin-top:40px;padding-top:40px;border-top:1px solid var(--line);}
@@ -2624,7 +2624,9 @@
        (혜택 섹션의 .ref-mask와 같은 방식) — 그래서 예시 글자 자리를 먼저 배경색으로 덮은 다음 그 위에
        실시간 텍스트를 그려요. maskBox/textBox는 레퍼런스 이미지를 직접 잘라 실측한 좌표(근접-검정 픽셀 기준). */
     var BILLBOARD_TEXT = {
-      copy1:   {sample:'오늘만 역대급혜택', maskBox:{x:47,  y:204, w:308, h:42}, textBox:{x:49,  y:206, w:305, h:40}, size:31, center:false, maskColor:'#e0c8bb'},
+      /* 카피1 마스크 높이(h)를 원래 글자 높이(42)보다 카피2 시작 지점(y:259)까지 여유있게 늘려서(58),
+         카피1/카피2 사이 빈틈으로 배경 사진이 살짝 비쳐 점선처럼 보이던 이음매를 없앴어요(2026-09-28). */
+      copy1:   {sample:'오늘만 역대급혜택', maskBox:{x:47,  y:204, w:308, h:58}, textBox:{x:49,  y:206, w:305, h:40}, size:31, center:false, maskColor:'#e0c8bb'},
       copy2:   {sample:'설화수!',           maskBox:{x:47,  y:259, w:124, h:44}, textBox:{x:49,  y:261, w:122, h:40}, size:31, center:false, maskColor:'#e0c8bb'}
     };
     /* 쿠폰1/2는 자유 텍스트가 아니라 "뱃지 먼저 선택 -> 값 입력" 방식이라 위 BILLBOARD_TEXT가 아니라
