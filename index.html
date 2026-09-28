@@ -114,6 +114,11 @@
   /* 메인상단2 (원본 720x904 기준) */
   .rt2-brand{font-weight:900;color:#000;letter-spacing:0em;}
   .rt2-sub{font-weight:600;color:#000;letter-spacing:-0.02em;}
+  /* 배너요청서 - 빌보드베너: 글자 없는 이미지 위 텍스트 레이어 (원본 720x360 기준, banner_block.js에서 생성) */
+  .bbrt-copy1,.bbrt-copy2{font-weight:800;color:#111;letter-spacing:-0.02em;}
+  .bbrt-coupon1,.bbrt-coupon2{font-weight:800;color:#111;letter-spacing:-0.01em;text-align:center;}
+  /* 쿠폰1/2 흰 뱃지는 모델컷/배경이미지를 올린 뒤에도 계속 보이는 UI 칩이라 살짝 둥근 모서리를 줌 */
+  .bb-mask-pill{border-radius:6px;}
   /* 혜택: 글자 없는 이미지 위 텍스트 레이어 (원본 720x1032 기준, 가운데 정렬) */
   .rtb{text-align:center;}
   .rtb-tsub{font-weight:400;color:#333333;letter-spacing:-0.02em;}
@@ -2602,6 +2607,20 @@
       coupon1: {x:51,  y:136, w:68,  h:43},
       coupon2: {x:153, y:136, w:89,  h:43}
     };
+    /* 카피/쿠폰 입력값을 레퍼런스 이미지 위에 실시간으로 얹는 텍스트 레이어(메인상단 renderHeroText와 동일한 방식).
+       레퍼런스 사진에 이미 예시 글자가 박혀 있어서, 그 위에 새 글자만 겹쳐 그리면 두 글자가 겹쳐 보여요
+       (혜택 섹션의 .ref-mask와 같은 방식) — 그래서 예시 글자 자리를 먼저 배경색으로 덮은 다음 그 위에
+       실시간 텍스트를 그려요. maskBox/textBox는 레퍼런스 이미지를 직접 잘라 실측한 좌표(근접-검정 픽셀 기준). */
+    var BILLBOARD_TEXT = {
+      copy1:   {sample:'오늘만 역대급혜택', maskBox:{x:47,  y:204, w:308, h:42}, textBox:{x:49,  y:206, w:305, h:40}, size:31, center:false, maskColor:'#e0c8bb'},
+      copy2:   {sample:'설화수!',           maskBox:{x:47,  y:259, w:124, h:44}, textBox:{x:49,  y:261, w:122, h:40}, size:31, center:false, maskColor:'#e0c8bb'},
+      coupon1: {sample:'10%',              maskBox:{x:51,  y:136, w:68,  h:43}, textBox:{x:51,  y:136, w:68,  h:43}, size:22, center:true,  maskColor:'#ffffff'},
+      coupon2: {sample:'T멤버십 ~11%',     maskBox:{x:153, y:136, w:89,  h:43}, textBox:{x:153, y:136, w:89,  h:43}, size:15, center:true,  maskColor:'#ffffff'}
+    };
+    /* "1데이빅딜" 로고 부분만 레퍼런스 이미지에서 오려낸 좌표(메인상단 LOGO_BADGE_BOX와 같은 기법, PIL로 실측).
+       모델컷/배경이미지를 올리면 로고까지 가려지므로, "1데이빅딜 로고 삽입" 체크박스가 켜져 있을 때만
+       이 배지를 이미지 위 맨 앞에 항상 띄워서 로고가 계속 보이게 해요. */
+    var BILLBOARD_LOGO_BOX = {x:44, y:50, w:132, h:44};
 
     var typeSeq = 0, entrySeq = 0;
     var entryPhotoUrls = {};
@@ -2669,6 +2688,66 @@
       });
     }
 
+    /* ---- 카피1/카피2/쿠폰1/쿠폰2 실시간 반영 (메인상단 renderHeroText와 동일한 방식) ---- */
+    function renderBillboardEntryText(seq){
+      var row = document.querySelector('.section-row[data-ref="billboard' + seq + '"]');
+      if (!row) return;
+      var wrap = row.querySelector('.ref-img-wrap');
+      var u = wrap.clientWidth / BILLBOARD_DIMS.w;
+      if (!u) return;
+      Object.keys(BILLBOARD_TEXT).forEach(function(key){
+        var c = BILLBOARD_TEXT[key];
+        var el = document.getElementById('rt-bb-' + key + '-' + seq);
+        var inp = document.getElementById('bb-' + key + '-' + seq);
+        var mask = document.getElementById('bb-mask-' + key + '-' + seq);
+        if (mask) {
+          mask.style.left = (c.maskBox.x * u) + 'px';
+          mask.style.top = (c.maskBox.y * u) + 'px';
+          mask.style.width = (c.maskBox.w * u) + 'px';
+          mask.style.height = (c.maskBox.h * u) + 'px';
+          mask.style.background = c.maskColor;
+          mask.style.display = 'block';
+        }
+        if (!el || !inp) return;
+        var text = inp.value.replace(/^\s+|\s+$/g, '') || c.sample;
+        el.textContent = text;
+        var boxW = c.textBox.w * u, boxH = c.textBox.h * u;
+        el.style.left = (c.textBox.x * u) + 'px';
+        el.style.width = boxW + 'px';
+        var fs = c.size * u;
+        el.style.fontSize = fs + 'px';
+        el.style.top = c.center ? (c.textBox.y * u + (boxH - fs) / 2) + 'px' : (c.textBox.y * u) + 'px';
+        var w = el.scrollWidth, max = boxW;
+        if (w > max) {
+          fs = Math.max(fs * max / w, fs * 0.5);
+          el.style.fontSize = fs + 'px';
+          if (c.center) el.style.top = (c.textBox.y * u + (boxH - fs) / 2) + 'px';
+        }
+      });
+    }
+
+    /* ---- "1데이빅딜" 로고 배지: 체크박스가 켜져 있을 때만, 레퍼런스 사진에서 오려낸 로고를
+       이미지 위 맨 앞에 항상 표시(메인상단 positionLogoBadges와 같은 스프라이트 공식) ---- */
+    function positionBillboardLogoBadge(seq){
+      var row = document.querySelector('.section-row[data-ref="billboard' + seq + '"]');
+      if (!row) return;
+      var badge = row.querySelector('.ref-logo-badge');
+      var checkbox = document.getElementById('bb-logo-' + seq);
+      var refImg = row.querySelector(':scope > .ref-panel .ref-img-wrap > .ref-img');
+      if (!badge || !checkbox) return;
+      if (!checkbox.checked) { badge.style.display = 'none'; return; }
+      if (!refImg || !refImg.getAttribute('src')) { badge.style.display = 'none'; return; }
+      var box = BILLBOARD_LOGO_BOX, dims = BILLBOARD_DIMS;
+      badge.style.left = (box.x / dims.w * 100) + '%';
+      badge.style.top = (box.y / dims.h * 100) + '%';
+      badge.style.width = (box.w / dims.w * 100) + '%';
+      badge.style.height = (box.h / dims.h * 100) + '%';
+      badge.style.backgroundImage = 'url("' + refImg.getAttribute('src') + '")';
+      badge.style.backgroundSize = (dims.w / box.w * 100) + '% ' + (dims.h / box.h * 100) + '%';
+      badge.style.backgroundPosition = (box.x / (dims.w - box.w) * 100) + '% ' + (box.y / (dims.h - box.h) * 100) + '%';
+      badge.style.display = 'block';
+    }
+
     function createBillboardEntry(){
       entrySeq += 1;
       var seq = entrySeq;
@@ -2682,7 +2761,20 @@
           '<div class="ref-panel">' +
             '<div class="ref-img-wrap">' +
               '<img class="ref-img" src="' + BILLBOARD_REF + '">' +
+              /* 카피1/2는 메인상단 문구처럼 사진 위에 그냥 얹히는 텍스트라 마스크를 사진(ref-photo)보다
+                 뒤에 둬서, 업로드 전 예시 문구만 가리면 돼요. 반면 쿠폰1/2는 흰 뱃지(알약모양) UI라
+                 사진을 올린 뒤에도 계속 보여야 자연스럽고 어두운 사진 위에서도 글자가 잘 읽히니,
+                 그 마스크는 사진보다 앞(=로고 배지와 같은 자리)에 둬요. */
+              '<div class="ref-mask" id="bb-mask-copy1-' + seq + '"></div>' +
+              '<div class="ref-mask" id="bb-mask-copy2-' + seq + '"></div>' +
               '<img class="ref-photo" data-bbfield="image" style="left:0;top:0;width:100%;height:100%;">' +
+              '<div class="ref-mask bb-mask-pill" id="bb-mask-coupon1-' + seq + '"></div>' +
+              '<div class="ref-mask bb-mask-pill" id="bb-mask-coupon2-' + seq + '"></div>' +
+              '<div class="ref-logo-badge" data-bblogo="' + seq + '"></div>' +
+              '<span class="rt bbrt bbrt-copy1" id="rt-bb-copy1-' + seq + '"></span>' +
+              '<span class="rt bbrt bbrt-copy2" id="rt-bb-copy2-' + seq + '"></span>' +
+              '<span class="rt bbrt bbrt-coupon1" id="rt-bb-coupon1-' + seq + '"></span>' +
+              '<span class="rt bbrt bbrt-coupon2" id="rt-bb-coupon2-' + seq + '"></span>' +
               '<div class="ref-highlight"></div>' +
             '</div>' +
             '<div class="ref-bottom-pad"></div>' +
@@ -2740,6 +2832,20 @@
         entry.remove();
       });
 
+      Object.keys(BILLBOARD_TEXT).forEach(function(key){
+        var inp = entry.querySelector('#bb-' + key + '-' + seq);
+        if (inp) inp.addEventListener('input', function(){ renderBillboardEntryText(seq); });
+      });
+      var logoCheckbox = entry.querySelector('#bb-logo-' + seq);
+      if (logoCheckbox) logoCheckbox.addEventListener('change', function(){ positionBillboardLogoBadge(seq); });
+
+      /* entry가 아직 DOM에 붙기 전(호출부에서 appendChild하기 전)이라 clientWidth를 못 구하므로,
+         이번 틱이 끝나고(=appendChild 완료 후) 초기 렌더를 한 번 실행해요. */
+      setTimeout(function(){
+        renderBillboardEntryText(seq);
+        positionBillboardLogoBadge(seq);
+      }, 0);
+
       return entry;
     }
 
@@ -2786,6 +2892,14 @@
     }
 
     updateEmptyState();
+
+    /* 리사이즈 시 활성화된 빌보드베너 엔트리 전부 텍스트 위치 재계산(로고 배지는 %기반이라 재계산 불필요) */
+    window.addEventListener('resize', function(){
+      document.querySelectorAll('.section-row[data-ref^="billboard"]').forEach(function(row){
+        var seq = row.getAttribute('data-ref').replace('billboard', '');
+        renderBillboardEntryText(seq);
+      });
+    });
 
     /* ---- 구글시트 만들기 ---- */
     var bannerSheetUrl = '';
