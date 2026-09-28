@@ -150,6 +150,7 @@
   .upload:focus-within{outline:2px solid var(--accent);outline-offset:1px;}
   .upload svg{width:18px;height:18px;stroke:currentColor;flex:none;}
   .upload-filename{font-weight:600;color:var(--ink);font-size:11px;word-break:break-all;}
+  .upload-note{font-size:10.5px;color:var(--accent);font-weight:600;}
 
   .sub-grid.deals{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
   @media (max-width:760px){.sub-grid.deals{grid-template-columns:repeat(2,1fr);}}
@@ -390,6 +391,7 @@
         <label class="upload" for="h-image">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>
           <span>모델컷이미지</span>
+          <span class="upload-note">*메인상단2 동시적용</span>
           <span class="upload-filename" id="h-image-name"></span>
         </label>
         <input type="file" accept="image/*" id="h-image" class="visually-hidden">
@@ -416,14 +418,9 @@
         <div class="field"><label for="h2-brand">브랜드명</label><input type="text" id="h2-brand" placeholder="예: 설화수"></div>
         <div class="field"><label for="h2-sub">서브카피</label><input type="text" id="h2-sub" placeholder="예: 추석맞이 브랜드위크"></div>
       </div>
-      <div class="field-row single">
-        <label class="upload" for="h2-image">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>
-          <span>모델컷이미지</span>
-          <span class="upload-filename" id="h2-image-name"></span>
-        </label>
-        <input type="file" accept="image/*" id="h2-image" class="visually-hidden">
-      </div>
+      <!-- 메인상단2는 피그마에서 메인상단과 같은 배경 이미지가 그대로 들어가서 별도 업로드 칸이
+           없어요. 위 "메인상단" 모델컷이미지를 올리면 이 미리보기에도 동시에 반영돼요
+           (아래 refPhotoUrls 리스너의 h-image 특수 처리 참고). -->
     </div>
   </div>
 
@@ -851,8 +848,7 @@
     ]},
     {section:'메인상단2', fields:[
       {id:'h2-brand', name:'브랜드명', type:'text'},
-      {id:'h2-sub', name:'서브카피', type:'text'},
-      {id:'h2-image', name:'모델컷이미지', type:'image'}
+      {id:'h2-sub', name:'서브카피', type:'text'}
     ]},
     {section:'혜택타이틀', fields:[
       {id:'bt-sub', name:'서브카피', type:'text'},
@@ -1141,6 +1137,16 @@
       }
       // 혜택 아이콘이면 업로드 여부에 따라 빈 아이콘 자리 표시(placeholder)도 같이 갱신해요.
       if (/^b[1-3]-image$/.test(inp.id)) positionRefPhotos();
+      // 메인상단2는 피그마에서 메인상단과 같은 배경 이미지가 그대로 들어가서 별도 업로드 칸이
+      // 없어요 — 메인상단 모델컷이미지를 올리면 메인상단2 미리보기(h2-image)에도 같은 파일을
+      // 그대로 복사해서 동시에 반영해요(업로드 필드는 h-image 하나뿐, 시트 행도 h-image만 생성됨).
+      if (inp.id === 'h-image') {
+        var photo2 = document.querySelector('.ref-photo[data-field="h2-image"]');
+        if (photo2) {
+          if (f) { photo2.src = url; photo2.style.display = 'block'; }
+          else { photo2.removeAttribute('src'); photo2.style.display = 'none'; }
+        }
+      }
     });
   });
 
