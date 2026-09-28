@@ -48,6 +48,11 @@
     .section-row{display:flex;flex-direction:column;}
     .ref-panel{max-width:420px;margin:0 auto 16px;}
   }
+  /* 배너요청서(빌보드베너)만 예시 이미지를 1.2배 크게(340px -> 408px, 모바일 420px -> 504px) */
+  .section-row[data-ref^="billboard"]{grid-template-columns:408px 1fr;}
+  @media (max-width:860px){
+    .section-row[data-ref^="billboard"] .ref-panel{max-width:504px;}
+  }
   .repeat-list{display:flex;flex-direction:column;}
   .repeat-list .section-row + .section-row{margin-top:40px;padding-top:40px;border-top:1px solid var(--line);}
   .btn-add-row{margin-top:24px;}
@@ -2702,6 +2707,18 @@
       }
       var k = fieldBox.h / COUPON_BADGE_H;
       var dispW = COUPON_BADGE_W * k, dispH = COUPON_BADGE_H * k;
+      /* 포커스 시 왼쪽 미리보기에 뜨는 주황 타겟영역 표시(HIGHLIGHT_MAP)를, 실제로 값이 얹히는
+         자리(badge.mask, 뱃지 종류마다 위치/크기가 다름)에 맞게 매번 갱신해요. 이걸 안 하면
+         registerHighlight()가 애초에 등록해둔 옛 쿠폰 박스(자유 텍스트 시절 좌표)가 그대로 남아있어서,
+         실제 뱃지 자리와 안 맞는 채로 주황 박스 + 어두운 비네트가 겹쳐 뱃지가 잘려 보이는 것처럼
+         이상하게 보였어요(쿠폰 종류를 바꿀 때마다 값 자리가 달라지므로 이 박스도 같이 갱신). */
+      HIGHLIGHT_MAP[prefix + '-' + slotKey + '-' + seq] = {
+        img: 'billboard' + seq,
+        x: fieldBox.x + badge.mask.x * k,
+        y: fieldBox.y + badge.mask.y * k,
+        w: badge.mask.w * k,
+        h: badge.mask.h * k
+      };
       if (img) {
         img.style.display = 'block';
         img.style.left = (fieldBox.x * u) + 'px';
