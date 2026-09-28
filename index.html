@@ -154,6 +154,8 @@
      (좌/우 두 칸)로 내려가서 정확히 원하는 위치에 놓여요. */
   .card-head{display:flex;align-items:center;gap:10px;margin-bottom:0;grid-column:1/-1;}
   .card-head h2{font-size:22.3px;margin:0;letter-spacing:-0.005em;}
+  .section-badge{grid-column:1/-1;margin-bottom:8px;}
+  .section-badge img{display:block;height:24px;width:auto;}
 
   .field-row{display:flex;flex-direction:column;gap:14px;}
   .field-row.single{display:flex;}
@@ -302,55 +304,16 @@
   }
   @media (max-width:900px){ .side-nav{display:none;} }
 
-  /* ===== 배너 요청서 ===== */
-  .banner-view-inner{display:flex;flex-direction:column;gap:20px;margin-bottom:24px;}
-  .banner-type-card{
-    border:1px solid var(--line);border-radius:14px;padding:20px;
-    background:var(--surface);box-shadow:var(--shadow);
-    display:flex;flex-direction:column;gap:16px;
-  }
-  #banner-type-list{display:flex;flex-direction:column;}
-  .banner-type-card + .banner-type-card{margin-top:40px;padding-top:40px;border-top:1px solid var(--line);}
-  .banner-type-head{display:flex;align-items:center;gap:12px;}
-  .banner-type-label{flex:1 1 0;font-size:19px;font-weight:700;letter-spacing:-0.005em;color:var(--ink);}
-  .btn-remove-type{
-    flex:none;display:flex;align-items:center;justify-content:center;
-    width:28px;height:28px;padding:0;border-radius:50%;
-    font:inherit;color:var(--muted);background:none;border:1px solid var(--line-strong);cursor:pointer;
-  }
-  .btn-remove-type svg{width:14px;height:14px;}
-  .btn-remove-type:hover{border-color:var(--accent);color:var(--accent);}
-  .banner-entry-list{display:flex;flex-direction:column;gap:0;}
-  .banner-entry + .banner-entry{margin-top:32px;padding-top:32px;border-top:1px dashed var(--line);}
+  /* ===== 배너(메인빌보드) — 원데이빅딜 페이지 안에 합쳐진 입력 영역.
+     기존 입력 페이지 섹션들과 똑같은 형식(.repeat-list/.section-row)을 그대로 써서
+     별도 테두리 박스 없이 자연스럽게 이어지도록 함. ===== */
   .banner-logo-check{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink);cursor:pointer;width:fit-content;}
   .banner-logo-check input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;}
-  .btn-add-entry,.btn-remove-entry{
-    font:inherit;font-size:13.5px;font-weight:600;color:var(--ink);background:var(--surface-2);
-    border:1.5px dashed var(--line-strong);border-radius:8px;padding:10px;cursor:pointer;
-  }
-  .btn-remove-entry{margin-top:12px;}
-  .btn-add-entry:hover,.btn-remove-entry:hover{border-color:var(--accent);color:var(--accent);}
-  .banner-type-picker-wrap{position:relative;}
   .btn-add-type{
     font:inherit;font-size:14.5px;font-weight:700;color:var(--ink);background:var(--surface);
     border:1.5px dashed var(--line-strong);border-radius:12px;padding:16px;cursor:pointer;width:100%;
   }
   .btn-add-type:hover{border-color:var(--accent);color:var(--accent);}
-  .banner-type-menu{
-    position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:10;
-    background:var(--surface);border:1px solid var(--line-strong);border-radius:12px;
-    box-shadow:0 8px 24px rgba(33,29,24,.14);padding:8px;display:flex;flex-direction:column;gap:2px;
-    max-height:320px;overflow-y:auto;
-  }
-  .banner-type-opt{
-    font:inherit;font-size:14.5px;text-align:left;background:none;border:none;border-radius:8px;
-    padding:11px 12px;cursor:pointer;color:var(--ink);display:flex;align-items:center;justify-content:space-between;gap:8px;
-  }
-  .banner-type-opt:hover{background:var(--surface-2);}
-  .banner-type-opt[disabled]{color:var(--muted);cursor:not-allowed;}
-  .banner-type-opt[disabled]:hover{background:none;}
-  .banner-type-opt .tag{font-size:11px;color:var(--muted);font-weight:500;}
-  .banner-empty{color:var(--muted);font-size:14px;padding:20px 0;text-align:center;}
 </style>
 </head>
 <body>
@@ -372,17 +335,6 @@
       </ul>
     </div>
   </div>
-  <div class="nav-group is-collapsed" id="nav-banner">
-    <button type="button" class="nav-group-head" aria-expanded="false" aria-controls="nav-list-banner">
-      <span>BANNER</span>
-      <svg class="nav-chev" viewBox="0 0 14 10" aria-hidden="true"><polygon points="7,0 14,10 0,10"></polygon></svg>
-    </button>
-    <div class="nav-list-wrap">
-      <ul class="nav-list" id="nav-list-banner">
-        <li><button type="button" class="nav-item" data-view="banner"><span>배너요청서</span></button></li>
-      </ul>
-    </div>
-  </div>
 </nav>
 <div class="app-main">
 <div class="wrap" id="view-onedaybigdeal">
@@ -393,6 +345,7 @@
   </header>
 
   <div class="section-row" data-ref="hero">
+    <div class="section-badge"><img src="data:image/png;base64,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" alt="DESIGN"></div>
     <div class="card-head"><h2>메인상단</h2></div>
     <div class="ref-panel">
       <div class="ref-img-wrap">
@@ -723,6 +676,11 @@
 
   <hr class="row-divider">
 
+  <div class="repeat-list" id="banner-entry-list"></div>
+  <button type="button" class="btn-add-type btn-add-row" id="btn-add-banner-entry">+ 배너 추가</button>
+
+  <hr class="row-divider">
+
   <div class="util-row-pair">
     <div class="util-row">
       <label for="planner-name">담당 기획자</label>
@@ -763,40 +721,6 @@
 </div>
 <div class="wrap view-blank" id="view-tbrand" hidden></div>
 <div class="wrap view-blank" id="view-promo" hidden></div>
-<div class="wrap" id="view-banner" hidden>
-  <header class="page">
-    <h1>배너 요청서</h1>
-    <p class="lede">배너 타입을 추가하고, 왼쪽 레퍼런스를 보면서 오른쪽에 이미지와 카피를 채운 다음, 맨 아래에서 구글시트를 만드세요.</p>
-    <p class="ref-note">타입과 배너는 자유롭게 추가·삭제할 수 있어요. (레퍼런스가 아직 없는 타입은 준비중이에요)</p>
-  </header>
-  <div class="banner-view-inner">
-    <div id="banner-type-list"></div>
-    <div class="banner-empty" id="banner-empty-msg">아직 추가된 배너 타입이 없어요. 아래 버튼으로 타입을 추가해 주세요.</div>
-    <div class="banner-type-picker-wrap" id="banner-type-picker-wrap">
-      <button type="button" class="btn-add-type" id="btn-add-banner-type">+ 배너 타입 추가</button>
-    </div>
-  </div>
-  <div class="submit-card">
-    <div class="btn-pair">
-      <button class="submit-btn" id="btn-create-banner-sheet" type="button">구글시트 만들기</button>
-      <button class="secondary-btn" id="btn-copy-banner-link" type="button" disabled>
-        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
-        <span class="btn-label">시트 링크 복사하기</span>
-      </button>
-    </div>
-    <div class="btn-pair">
-      <button class="plan-btn" id="btn-create-banner-plan" type="button">기획서 만들기</button>
-      <button class="secondary-btn" id="btn-copy-banner-plan" type="button" disabled>
-        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
-        <span class="btn-label">기획서 링크 복사하기</span>
-      </button>
-    </div>
-    <div class="status-msg" id="banner-status-msg"></div>
-    <div class="submit-note">
-      클릭하면 업로드한 이미지가 <b>구글 드라이브</b>에 올라가고, 위 내용이 <b>구글 시트</b>로 정리돼서 만들어져요.
-    </div>
-  </div>
-</div>
 </div><!-- /.app-main -->
 </div><!-- /.app-layout -->
 
@@ -2174,6 +2098,9 @@
           if (f.type === 'text') {
             var el = $(f.id);
             value = el ? el.value : '';
+          } else if (f.type === 'checkbox') {
+            var chk = $(f.id);
+            value = (chk && chk.checked) ? '포함' : '';
           } else if (f.type === 'image') {
             var inp = $(f.id);
             var file = inp && inp.files && inp.files[0];
@@ -2322,6 +2249,9 @@
           } else {
             sec.items.push({ label: label, value: '', filled: false });
           }
+        } else if (it.type === 'checkbox') {
+          var checked = !!(it.el && it.el.checked);
+          sec.items.push({ label: label, value: checked ? '포함' : '', filled: checked });
         } else {
           var val = trimVal(it.el.value);
           sec.items.push({ label: label, value: val, filled: val !== '' });
@@ -2600,26 +2530,13 @@
     }
     setTimeout(function(){ label.textContent = original; }, 1500);
   });
-  /* ===== 배너 요청서: 고정 카탈로그에서 타입 선택, 빌보드배너는 실제 레퍼런스+구조화 입력 ===== */
+  /* ===== 메인빌보드 — 원데이빅딜 페이지에 합쳐진 배너 입력 영역.
+     기존 특가상품/라이브방송과 같은 방식(FIELD_MAP 등록 + .repeat-list)을 그대로 써서,
+     구글시트 만들기/기획서 만들기 버튼도 별도로 두지 않고 원데이빅딜의 기존 버튼 하나로
+     같이 처리돼요. 참조 이미지 위 실시간 오버레이·쿠폰 뱃지 선택 로직은 기존 그대로예요. ===== */
   (function(){
-    var typeList = document.getElementById('banner-type-list');
-    var emptyMsg = document.getElementById('banner-empty-msg');
-    var addTypeBtn = document.getElementById('btn-add-banner-type');
-    var pickerWrap = document.getElementById('banner-type-picker-wrap');
-    if (!typeList || !addTypeBtn || !pickerWrap) return;
-
-    var CATALOG = [
-      {key:'billboard',     name:'빌보드배너',             ready:true},
-      {key:'todaybrand',    name:'오늘의 브랜드',           ready:false},
-      {key:'smallpopup',    name:'스몰팝업',               ready:false},
-      {key:'detail',        name:'상품상세배너',           ready:false},
-      {key:'hometabbrand',  name:'홈탭 브랜드딜 배너&로고', ready:false},
-      {key:'hometabtop',    name:'홈탭 상단 띠배너',        ready:false},
-      {key:'searchimg',     name:'검색창 이미지배너',       ready:false},
-      {key:'shortcut',      name:'서비스 바로가기 배너',    ready:false},
-      {key:'floating',      name:'홈탭 플로팅(등등이) 배너', ready:false},
-      {key:'cpp',           name:'프리미엄 광고배너(CPP)',  ready:false}
-    ];
+    var entryListEl = document.getElementById('banner-entry-list');
+    if (!entryListEl) return;
 
     /* 2026-09-28(5차): 사용자가 쿠폰1/2·카피1/2 예시 데이터가 아예 없는 '깨끗한' 베이스 사진을 새로
        전달해서 기존 레퍼런스(쿠폰/카피 예시가 사진에 박혀 있던 버전)를 이걸로 교체했어요. 로고/인물/배경
@@ -2792,52 +2709,8 @@
       }
     }
 
-    var typeSeq = 0, entrySeq = 0;
+    var entrySeq = 0;
     var entryPhotoUrls = {};
-    var addedTypes = {};
-
-    function updateEmptyState(){
-      emptyMsg.style.display = typeList.children.length ? 'none' : '';
-    }
-
-    function closeTypeMenu(){
-      var m = pickerWrap.querySelector('.banner-type-menu');
-      if (m) m.remove();
-      document.removeEventListener('click', onDocClickCloseMenu, true);
-    }
-    function onDocClickCloseMenu(e){
-      if (!pickerWrap.contains(e.target)) closeTypeMenu();
-    }
-
-    function openTypeMenu(){
-      closeTypeMenu();
-      var menu = document.createElement('div');
-      menu.className = 'banner-type-menu';
-      CATALOG.forEach(function(cat){
-        var opt = document.createElement('button');
-        opt.type = 'button';
-        opt.className = 'banner-type-opt';
-        var already = !!addedTypes[cat.key];
-        var disabled = !cat.ready || already;
-        opt.disabled = disabled;
-        opt.innerHTML = '<span>' + cat.name + '</span>' +
-          (already ? '<span class="tag">추가됨</span>' : (!cat.ready ? '<span class="tag">준비중</span>' : ''));
-        if (!disabled) {
-          opt.addEventListener('click', function(){
-            addType(cat.key);
-            closeTypeMenu();
-          });
-        }
-        menu.appendChild(opt);
-      });
-      pickerWrap.appendChild(menu);
-      setTimeout(function(){ document.addEventListener('click', onDocClickCloseMenu, true); }, 0);
-    }
-
-    addTypeBtn.addEventListener('click', function(){
-      if (pickerWrap.querySelector('.banner-type-menu')) { closeTypeMenu(); return; }
-      openTypeMenu();
-    });
 
     /* ---- 빌보드배너: 포커스한 필드가 레퍼런스 위 어디인지 하이라이트로 표시 ----
        기존 원데이빅딜 섹션들과 똑같이, 공유 스코프의 HIGHLIGHT_MAP / SECTION_DIMS 에
@@ -2920,12 +2793,18 @@
       var seq = entrySeq;
       registerHighlight(seq);
       var entry = document.createElement('div');
-      entry.className = 'banner-entry';
+      entry.className = 'section-row banner-entry';
+      entry.dataset.ref = 'billboard' + seq;
       entry.dataset.typeKey = 'billboard';
       entry.dataset.entrySeq = seq;
       entry.innerHTML =
-        '<div class="section-row" data-ref="billboard' + seq + '">' +
-          '<div class="card-head"><h2>빌보드배너 ' + seq + '</h2></div>' +
+        '<div class="section-badge" style="display:none"><img src="data:image/png;base64,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" alt="BANNER"></div>' +
+        '<div class="card-head">' +
+          '<h2>메인빌보드</h2>' +
+          '<button type="button" class="btn-remove-row" hidden aria-label="이 배너 삭제">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>' +
+          '</button>' +
+        '</div>' +
           '<div class="ref-panel">' +
             '<div class="ref-img-wrap">' +
               '<img class="ref-img" src="' + BILLBOARD_REF + '">' +
@@ -2976,9 +2855,7 @@
               '<div class="field"><label for="bb-copy1-' + seq + '">카피 줄1</label><input type="text" id="bb-copy1-' + seq + '" data-bbinput="copy1" placeholder="최대 글자 수 : 한 줄당 8자"></div>' +
               '<div class="field"><label for="bb-copy2-' + seq + '">카피 줄2(브랜드명)</label><input type="text" id="bb-copy2-' + seq + '" data-bbinput="copy2" placeholder="최대 글자 수 : 한 줄당 8자"></div>' +
             '</div>' +
-            '<button type="button" class="btn-remove-entry">－ 이 배너 삭제</button>' +
-          '</div>' +
-        '</div>';
+          '</div>';
 
       var fileInput = entry.querySelector('[data-bbinput="image"]');
       var photo = entry.querySelector('.ref-photo[data-bbfield="image"]');
@@ -3000,11 +2877,16 @@
         }
       });
 
-      entry.querySelector('.btn-remove-entry').addEventListener('click', function(){
+      /* 원데이빅딜 기존 섹션들(특가상품/라이브방송)과 같은 방식: 카드헤드의 작은 X 버튼으로 이 배너만 삭제.
+         FIELD_MAP에서도 같이 빼야 시트/기획서에서 사라져요. */
+      entry.querySelector('.btn-remove-row').addEventListener('click', function(){
         var key = 'entry' + seq;
         if (entryPhotoUrls[key]) { URL.revokeObjectURL(entryPhotoUrls[key]); delete entryPhotoUrls[key]; }
         unregisterHighlight(seq);
+        var idx = FIELD_MAP.indexOf(entry._fieldGroup);
+        if (idx !== -1) FIELD_MAP.splice(idx, 1);
         entry.remove();
+        renumberBillboardEntries();
       });
 
       Object.keys(BILLBOARD_TEXT).forEach(function(key){
@@ -3016,6 +2898,20 @@
 
       wireCouponPicker(entry, 'bb', 'coupon1', seq, BILLBOARD_FIELDS.coupon1);
       wireCouponPicker(entry, 'bb', 'coupon2', seq, BILLBOARD_FIELDS.coupon2);
+
+      /* 원데이빅딜의 다른 섹션들과 똑같이, 이 배너의 필드도 FIELD_MAP에 등록해서 기존 '구글시트 만들기'/
+         '기획서 만들기' 루프가 자동으로 같이 처리하게 해요(배너 전용 시트/기획서 버튼이 따로 필요 없어짐).
+         section 라벨은 renumberBillboardEntries()가 화면 순서에 맞춰 다시 매겨요(특가상품 방식과 동일). */
+      var group = { section: '메인빌보드', fields: [
+        {id:'bb-image-' + seq, name:'이미지', type:'image'},
+        {id:'bb-logo-' + seq, name:'로고', type:'checkbox'},
+        {id:'bb-coupon1-' + seq, name:'쿠폰1', type:'text'},
+        {id:'bb-coupon2-' + seq, name:'쿠폰2', type:'text'},
+        {id:'bb-copy1-' + seq, name:'카피1', type:'text'},
+        {id:'bb-copy2-' + seq, name:'카피2', type:'text'}
+      ]};
+      entry._fieldGroup = group;
+      FIELD_MAP.push(group);
 
       /* entry가 아직 DOM에 붙기 전(호출부에서 appendChild하기 전)이라 clientWidth를 못 구하므로,
          이번 틱이 끝나고(=appendChild 완료 후) 초기 렌더를 한 번 실행해요. */
@@ -3029,49 +2925,33 @@
       return entry;
     }
 
-    /* ---- 타입 카드 ---- */
-    function createTypeCard(catKey){
-      typeSeq += 1;
-      var cat = CATALOG.filter(function(c){ return c.key === catKey; })[0];
-      if (!cat) return null;
-      var card = document.createElement('div');
-      card.className = 'banner-type-card';
-      card.dataset.typeKey = catKey;
-      card.innerHTML =
-        '<div class="banner-type-head">' +
-          '<span class="banner-type-label">' + cat.name + '</span>' +
-          '<button type="button" class="btn-remove-type" aria-label="이 타입 삭제">' +
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>' +
-          '</button>' +
-        '</div>' +
-        '<div class="banner-entry-list"></div>' +
-        '<button type="button" class="btn-add-entry">+ 배너 추가</button>';
-
-      var entryListEl = card.querySelector('.banner-entry-list');
-      card.querySelector('.btn-add-entry').addEventListener('click', function(){
-        if (catKey === 'billboard') entryListEl.appendChild(createBillboardEntry());
+    /* 화면에 보이는 순서대로 첫 번째는 '메인빌보드', 그다음은 '메인빌보드2', '메인빌보드3'... — 특가상품/
+       라이브방송의 renumber()와 똑같은 규칙. 상단 배지(BANNER)는 항상 맨 첫 배너 위에만 보여요. */
+    function renumberBillboardEntries(){
+      var rows = Array.prototype.slice.call(entryListEl.children);
+      rows.forEach(function(row, idx){
+        var label = idx === 0 ? '메인빌보드' : '메인빌보드' + (idx + 1);
+        if (row._fieldGroup) row._fieldGroup.section = label;
+        var h2 = row.querySelector('.card-head h2');
+        if (h2) h2.textContent = label;
+        var badge = row.querySelector('.section-badge');
+        if (badge) badge.style.display = idx === 0 ? '' : 'none';
+        var delBtn = row.querySelector('.btn-remove-row');
+        if (delBtn) delBtn.hidden = rows.length <= 1;
       });
-      card.querySelector('.btn-remove-type').addEventListener('click', function(){
-        card.remove();
-        delete addedTypes[catKey];
-        updateEmptyState();
-      });
-
-      if (catKey === 'billboard') entryListEl.appendChild(createBillboardEntry());
-
-      return card;
     }
 
-    function addType(catKey){
-      if (addedTypes[catKey]) return;
-      var card = createTypeCard(catKey);
-      if (!card) return;
-      addedTypes[catKey] = true;
-      typeList.appendChild(card);
-      updateEmptyState();
+    var addEntryBtn = document.getElementById('btn-add-banner-entry');
+    if (addEntryBtn) {
+      addEntryBtn.addEventListener('click', function(){
+        entryListEl.appendChild(createBillboardEntry());
+        renumberBillboardEntries();
+      });
     }
 
-    updateEmptyState();
+    // 페이지를 열면 바로 배너 입력칸 1개가 보여요(타입을 따로 고를 필요 없이, 원데이빅딜의 다른 섹션처럼).
+    entryListEl.appendChild(createBillboardEntry());
+    renumberBillboardEntries();
 
     /* 리사이즈 시 활성화된 빌보드배너 엔트리 전부 텍스트 위치 재계산(로고 배지는 %기반이라 재계산 불필요) */
     window.addEventListener('resize', function(){
@@ -3086,130 +2966,6 @@
       });
     });
 
-    /* ---- 구글시트 만들기 ---- */
-    var bannerSheetUrl = '';
-    function setBannerStatus(msg, kind){
-      var el = document.getElementById('banner-status-msg');
-      el.textContent = msg;
-      el.className = 'status-msg' + (kind ? ' ' + kind : '');
-    }
-
-    var createBannerBtn = document.getElementById('btn-create-banner-sheet');
-    if (createBannerBtn) {
-      createBannerBtn.addEventListener('click', async function(){
-        var btn = createBannerBtn;
-        btn.disabled = true;
-        btn.textContent = '만드는 중...';
-        setBannerStatus('', '');
-
-        var designerEmail = '';
-
-        try {
-          designerEmail = normalizeEmail(designerEmail);
-          await getAccessToken();
-        } catch (e) {
-          setBannerStatus(errMessage(e), 'error');
-          btn.disabled = false;
-          btn.textContent = '구글시트 만들기';
-          return;
-        }
-
-        try {
-          var cards = typeList.querySelectorAll('.banner-type-card');
-          if (!cards.length) throw new Error('배너 타입을 먼저 추가해 주세요.');
-
-          var rows = [];
-          for (var i = 0; i < cards.length; i++) {
-            var card = cards[i];
-            var catKey = card.dataset.typeKey;
-            var cat = CATALOG.filter(function(c){ return c.key === catKey; })[0];
-            var typeName = cat ? cat.name : catKey;
-            rows.push(['**' + typeName + '**', '']);
-
-            if (catKey === 'billboard') {
-              var entries = card.querySelectorAll('.banner-entry');
-              for (var j = 0; j < entries.length; j++) {
-                var entry = entries[j];
-                var idx = j + 1;
-                var label = typeName + idx;
-                var fileInput = entry.querySelector('[data-bbinput="image"]');
-                var file = fileInput && fileInput.files && fileInput.files[0];
-                var imgValue = '';
-                if (file) {
-                  setBannerStatus(label + ' · 이미지 업로드 중...', '');
-                  imgValue = await uploadImage(file, label + '_배경이미지', designerEmail);
-                }
-                var logoVal = entry.querySelector('[data-bbinput="logo"]').checked ? '포함' : '';
-                var coupon1Val = entry.querySelector('[data-bbinput="coupon1"]').value || '';
-                var coupon2Val = entry.querySelector('[data-bbinput="coupon2"]').value || '';
-                var copy1Val = entry.querySelector('[data-bbinput="copy1"]').value || '';
-                var copy2Val = entry.querySelector('[data-bbinput="copy2"]').value || '';
-
-                rows.push(['MO_' + label + '_이미지', imgValue]);
-                rows.push(['MO_' + label + '_로고', logoVal]);
-                rows.push(['MO_' + label + '_쿠폰1', coupon1Val]);
-                rows.push(['MO_' + label + '_쿠폰2', coupon2Val]);
-                rows.push(['MO_' + label + '_카피1', copy1Val]);
-                rows.push(['MO_' + label + '_카피2', copy2Val]);
-                rows.push(['PC_' + label + '_이미지', imgValue]);
-                rows.push(['PC_' + label + '_로고', logoVal]);
-                rows.push(['PC_' + label + '_쿠폰1', coupon1Val]);
-                rows.push(['PC_' + label + '_쿠폰2', coupon2Val]);
-                rows.push(['PC_' + label + '_카피1', copy1Val]);
-                rows.push(['PC_' + label + '_카피2', copy2Val]);
-              }
-            }
-          }
-
-          setBannerStatus('시트 생성 중...', '');
-          var stamp = new Date();
-          var sheetTitle = '[배너요청서] ' + stamp.getFullYear() + '.' + (stamp.getMonth() + 1) + '.' + stamp.getDate();
-
-          var sheetRes = await createPromoSheet(rows, sheetTitle, designerEmail);
-          bannerSheetUrl = (sheetRes && sheetRes.url) || '';
-
-          if (sheetRes && sheetRes.shareError) setBannerStatus('시트는 만들어졌지만 디자이너 공유에는 실패했어요(' + sheetRes.shareError + '). 시트: ' + bannerSheetUrl, 'error');
-          else if (sheetRes && sheetRes.linkShareError) setBannerStatus('시트는 만들어졌지만 "링크가 있는 모든 사용자 보기" 공유에는 실패했어요(' + sheetRes.linkShareError + '). 시트: ' + bannerSheetUrl, 'error');
-          else setBannerStatus('완료! 시트가 생성됐어요: ' + bannerSheetUrl, 'success');
-
-          var copyBtn = document.getElementById('btn-copy-banner-link');
-          if (copyBtn) copyBtn.disabled = false;
-        } catch (err) {
-          setBannerStatus('오류가 발생했어요: ' + errMessage(err), 'error');
-        } finally {
-          btn.disabled = false;
-          btn.textContent = '구글시트 만들기';
-        }
-      });
-    }
-
-    var copyBannerBtn = document.getElementById('btn-copy-banner-link');
-    if (copyBannerBtn) {
-      copyBannerBtn.addEventListener('click', async function(){
-        if (!bannerSheetUrl) return;
-        var label = copyBannerBtn.querySelector('.btn-label');
-        var original = label.textContent;
-        var copied = false;
-        try { await navigator.clipboard.writeText(bannerSheetUrl); copied = true; } catch (e1) {}
-        if (!copied) {
-          var ta = document.createElement('textarea');
-          ta.value = bannerSheetUrl;
-          ta.setAttribute('readonly', '');
-          ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
-          document.body.appendChild(ta);
-          ta.select();
-          ta.setSelectionRange(0, bannerSheetUrl.length);
-          try { copied = document.execCommand('copy'); } catch (e2) {}
-          document.body.removeChild(ta);
-        }
-        if (copied) {
-          label.textContent = '복사됨!';
-          setTimeout(function(){ label.textContent = original; }, 1500);
-        } else {
-          setBannerStatus('복사에 실패했어요. 링크를 직접 선택해서 복사해주세요: ' + bannerSheetUrl, 'error');
-        }
-      });
-    }
   })();
 
 })();
