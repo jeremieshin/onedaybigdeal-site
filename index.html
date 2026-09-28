@@ -308,8 +308,6 @@
   /* ===== 배너(메인빌보드) — 원데이빅딜 페이지 안에 합쳐진 입력 영역.
      기존 입력 페이지 섹션들과 똑같은 형식(.repeat-list/.section-row)을 그대로 써서
      별도 테두리 박스 없이 자연스럽게 이어지도록 함. ===== */
-  .banner-logo-check{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink);cursor:pointer;width:fit-content;}
-  .banner-logo-check input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;}
   .btn-add-type{
     font:inherit;font-size:14.5px;font-weight:700;color:var(--ink);background:var(--surface);
     border:1.5px dashed var(--line-strong);border-radius:12px;padding:16px;cursor:pointer;width:100%;
@@ -2576,11 +2574,6 @@
     };
     /* 쿠폰1/2는 자유 텍스트가 아니라 "뱃지 먼저 선택 -> 값 입력" 방식이라 위 BILLBOARD_TEXT가 아니라
        아래 COUPON_BADGE_TYPES + renderCouponBadgeSlot()에서 따로 처리해요. */
-    /* "1데이빅딜" 로고 부분만 레퍼런스 이미지에서 오려낸 좌표(메인상단 LOGO_BADGE_BOX와 같은 기법, PIL로 실측).
-       모델컷/배경이미지를 올리면 로고까지 가려지므로, "1데이빅딜 로고 삽입" 체크박스가 켜져 있을 때만
-       이 배지를 이미지 위 맨 앞에 항상 띄워서 로고가 계속 보이게 해요. */
-    var BILLBOARD_LOGO_BOX = {x:44, y:50, w:132, h:44};
-
     /* ---- 쿠폰1/2: 자유 텍스트가 아니라 "뱃지(제공사 스타일) 먼저 선택 -> 값 입력" 방식.
        COUPON_BADGE_TYPES는 나중에 추가할 다른 배너 타입에서도 그대로 재사용할 수 있게
        특정 배너의 좌표에 의존하지 않는 공용 카탈로그예요. 뱃지 이미지는 92x46 고정 크기 PNG
@@ -2769,26 +2762,6 @@
 
     /* ---- "1데이빅딜" 로고 배지: 체크박스가 켜져 있을 때만, 레퍼런스 사진에서 오려낸 로고를
        이미지 위 맨 앞에 항상 표시(메인상단 positionLogoBadges와 같은 스프라이트 공식) ---- */
-    function positionBillboardLogoBadge(seq){
-      var row = document.querySelector('.section-row[data-ref="billboard' + seq + '"]');
-      if (!row) return;
-      var badge = row.querySelector('.ref-logo-badge');
-      var checkbox = document.getElementById('bb-logo-' + seq);
-      var refImg = row.querySelector(':scope > .ref-panel .ref-img-wrap > .ref-img');
-      if (!badge || !checkbox) return;
-      if (!checkbox.checked) { badge.style.display = 'none'; return; }
-      if (!refImg || !refImg.getAttribute('src')) { badge.style.display = 'none'; return; }
-      var box = BILLBOARD_LOGO_BOX, dims = BILLBOARD_DIMS;
-      badge.style.left = (box.x / dims.w * 100) + '%';
-      badge.style.top = (box.y / dims.h * 100) + '%';
-      badge.style.width = (box.w / dims.w * 100) + '%';
-      badge.style.height = (box.h / dims.h * 100) + '%';
-      badge.style.backgroundImage = 'url("' + refImg.getAttribute('src') + '")';
-      badge.style.backgroundSize = (dims.w / box.w * 100) + '% ' + (dims.h / box.h * 100) + '%';
-      badge.style.backgroundPosition = (box.x / (dims.w - box.w) * 100) + '% ' + (box.y / (dims.h - box.h) * 100) + '%';
-      badge.style.display = 'block';
-    }
-
     function createBillboardEntry(){
       entrySeq += 1;
       var seq = entrySeq;
@@ -2818,7 +2791,6 @@
               '<img class="ref-photo" data-bbfield="image" style="left:0;top:0;width:100%;height:100%;">' +
               '<div class="ref-mask bb-mask-pill" id="bb-mask-coupon1-' + seq + '"></div>' +
               '<div class="ref-mask bb-mask-pill" id="bb-mask-coupon2-' + seq + '"></div>' +
-              '<div class="ref-logo-badge" data-bblogo="' + seq + '"></div>' +
               '<span class="rt bbrt bbrt-copy1" id="rt-bb-copy1-' + seq + '"></span>' +
               '<span class="rt bbrt bbrt-copy2" id="rt-bb-copy2-' + seq + '"></span>' +
               '<span class="rt bbrt bbrt-coupon1" id="rt-bb-coupon1-' + seq + '"></span>' +
@@ -2836,10 +2808,6 @@
               '</label>' +
               '<input type="file" accept="image/*" id="bb-image-' + seq + '" data-bbinput="image" class="visually-hidden">' +
             '</div>' +
-            '<label class="banner-logo-check">' +
-              '<input type="checkbox" id="bb-logo-' + seq + '" data-bbinput="logo">' +
-              '<span>1데이빅딜 로고 삽입</span>' +
-            '</label>' +
             '<div class="field-row">' +
               '<div class="field coupon-field">' +
                 '<label>쿠폰1</label>' +
@@ -2894,9 +2862,6 @@
         var inp = entry.querySelector('#bb-' + key + '-' + seq);
         if (inp) inp.addEventListener('input', function(){ renderBillboardEntryText(seq); });
       });
-      var logoCheckbox = entry.querySelector('#bb-logo-' + seq);
-      if (logoCheckbox) logoCheckbox.addEventListener('change', function(){ positionBillboardLogoBadge(seq); });
-
       wireCouponPicker(entry, 'bb', 'coupon1', seq, BILLBOARD_FIELDS.coupon1);
       wireCouponPicker(entry, 'bb', 'coupon2', seq, BILLBOARD_FIELDS.coupon2);
 
@@ -2905,7 +2870,6 @@
          section 라벨은 renumberBillboardEntries()가 화면 순서에 맞춰 다시 매겨요(특가상품 방식과 동일). */
       var group = { section: '메인빌보드', fields: [
         {id:'bb-image-' + seq, name:'이미지', type:'image'},
-        {id:'bb-logo-' + seq, name:'로고', type:'checkbox'},
         {id:'bb-coupon1-' + seq, name:'쿠폰1', type:'text'},
         {id:'bb-coupon2-' + seq, name:'쿠폰2', type:'text'},
         {id:'bb-copy1-' + seq, name:'카피1', type:'text'},
@@ -2918,7 +2882,6 @@
          이번 틱이 끝나고(=appendChild 완료 후) 초기 렌더를 한 번 실행해요. */
       setTimeout(function(){
         renderBillboardEntryText(seq);
-        positionBillboardLogoBadge(seq);
         renderCouponBadgeSlot(entry, 'bb', 'coupon1', seq, BILLBOARD_FIELDS.coupon1);
         renderCouponBadgeSlot(entry, 'bb', 'coupon2', seq, BILLBOARD_FIELDS.coupon2);
       }, 0);
