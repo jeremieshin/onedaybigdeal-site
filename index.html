@@ -136,7 +136,7 @@
   .cp-dropdown{position:relative;flex:none;}
   .cp-trigger{
     display:flex;align-items:center;gap:6px;height:100%;
-    padding:0 8px;border:1px solid var(--line-strong);border-radius:4px;
+    padding:0 14px;border:1px solid var(--line-strong);border-radius:4px;
     background:var(--surface-2);color:var(--ink);cursor:pointer;font:inherit;
   }
   .cp-trigger:hover{border-color:var(--accent);}
@@ -163,15 +163,23 @@
   .cp-option img{display:block;width:46px;height:23px;flex:none;}
   .cp-option-label{font-size:13px;color:var(--ink);white-space:nowrap;}
   .coupon-field input[type=text]:disabled{background:var(--line);color:var(--muted);cursor:not-allowed;}
+  /* 2026-09-29(11차): 쿠폰 삭제(X) 버튼을 입력창 줄에서 빼서, 라벨("쿠폰1")과 같은 줄 우측에
+     라벨 텍스트 높이에 맞춰 배치 — 사용자가 전달한 예시 스크린샷 레이아웃대로. */
+  .coupon-field-head{display:flex;align-items:center;justify-content:space-between;gap:8px;}
   /* 쿠폰 삭제(X) 버튼 — 특가상품/라이브방송의 원형 X 버튼과 달리, 사용자가 명시적으로 요청한
      박스(각진 사각) 형태로 만듦. */
   .btn-remove-coupon{
     display:flex;align-items:center;justify-content:center;flex:none;
-    width:38px;padding:0;border-radius:4px;
+    width:20px;height:20px;padding:0;border-radius:4px;
     font:inherit;color:var(--muted);background:var(--surface);border:1px solid var(--line-strong);cursor:pointer;
   }
-  .btn-remove-coupon svg{width:13px;height:13px;}
+  .btn-remove-coupon svg{width:10px;height:10px;}
   .btn-remove-coupon:hover{border-color:var(--accent);color:var(--accent);}
+  /* "쿠폰 유형" 기본형/혜택형 라디오 버튼(2026-09-29, 10차 — 드롭다운 말고 라디오 버튼으로 요청) */
+  .cp-type-row{display:flex;gap:18px;}
+  .cp-type-opt{display:flex;align-items:center;gap:6px;font-size:13.5px;color:var(--ink);cursor:pointer;width:fit-content;}
+  .cp-type-opt input[type=radio]{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;}
+  .bbrt-subcopy{font-weight:600;color:#111;letter-spacing:-0.01em;}
   /* 혜택: 글자 없는 이미지 위 텍스트 레이어 (원본 720x1032 기준, 가운데 정렬) */
   .rtb{text-align:center;}
   .rtb-tsub{font-weight:400;color:#333333;letter-spacing:-0.02em;}
@@ -191,6 +199,7 @@
 
   .field-row{display:flex;flex-direction:column;gap:14px;}
   .field-row.single{display:flex;}
+  .field-row[hidden]{display:none;}
 
   .field{display:flex;flex-direction:column;gap:7px;}
   .field label{font-size:13px;color:var(--muted);font-weight:500;}
@@ -2604,7 +2613,11 @@
          샘플 문구도 가이드와 동일하게 "일이삼사오육칠팔"(정확히 8자 — 입력창 안내문구 "최대 글자 수 :
          한 줄당 8자"와 짝이 맞음)로 통일. */
       copy1:   {sample:'일이삼사오육칠팔', maskBox:{x:47,  y:204, w:308, h:58}, textBox:{x:49,  y:206, w:340, h:40}, size:40, center:false, maskColor:'#e0c8bb'},
-      copy2:   {sample:'일이삼사오육칠팔', maskBox:{x:47,  y:259, w:124, h:44}, textBox:{x:49,  y:261, w:340, h:40}, size:40, center:false, maskColor:'#e0c8bb'}
+      copy2:   {sample:'일이삼사오육칠팔', maskBox:{x:47,  y:259, w:124, h:44}, textBox:{x:49,  y:261, w:340, h:40}, size:40, center:false, maskColor:'#e0c8bb'},
+      /* 2026-09-29(10차): "쿠폰 유형"이 기본형일 때만 보이는 서브카피 — 메인카피(copy1) 바로 위,
+         쿠폰1/2 뱃지가 있던 자리를 대신 씀. 정확한 공식 가이드 이미지가 아직 없어서 일단 그 여유
+         공간에 맞춰 잡은 값이라, 사용자 확인 후 위치/크기를 조정할 수 있어요. */
+      subcopy: {sample:'서브카피서브카피', maskBox:{x:47,  y:150, w:308, h:36}, textBox:{x:49,  y:152, w:340, h:32}, size:24, center:false, maskColor:'#e0c8bb'}
     };
     /* 쿠폰1/2는 자유 텍스트가 아니라 "뱃지 먼저 선택 -> 값 입력" 방식이라 위 BILLBOARD_TEXT가 아니라
        아래 COUPON_BADGE_TYPES + renderCouponBadgeSlot()에서 따로 처리해요. */
@@ -2906,6 +2919,7 @@
               '<div class="ref-mask bb-mask-pill" id="bb-mask-coupon2-' + seq + '"></div>' +
               '<span class="rt bbrt bbrt-copy1" id="rt-bb-copy1-' + seq + '"></span>' +
               '<span class="rt bbrt bbrt-copy2" id="rt-bb-copy2-' + seq + '"></span>' +
+              '<span class="rt bbrt bbrt-subcopy" id="rt-bb-subcopy-' + seq + '" style="display:none"></span>' +
               '<span class="rt bbrt bbrt-coupon1" id="rt-bb-coupon1-' + seq + '"></span>' +
               '<span class="rt bbrt bbrt-coupon2" id="rt-bb-coupon2-' + seq + '"></span>' +
               '<div class="ref-highlight"></div>' +
@@ -2921,27 +2935,43 @@
               '</label>' +
               '<input type="file" accept="image/*" id="bb-image-' + seq + '" data-bbinput="image" class="visually-hidden">' +
             '</div>' +
-            '<div class="field-row">' +
+            '<div class="field-row single">' +
+              '<div class="field">' +
+                '<label>쿠폰 유형</label>' +
+                '<div class="cp-type-row">' +
+                  '<label class="cp-type-opt"><input type="radio" name="bb-coupon-type-' + seq + '" value="basic" data-bbtype="coupontype"><span>기본형</span></label>' +
+                  '<label class="cp-type-opt"><input type="radio" name="bb-coupon-type-' + seq + '" value="benefit" data-bbtype="coupontype" checked><span>혜택형</span></label>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="field-row" id="bb-coupon-fields-' + seq + '">' +
               '<div class="field coupon-field">' +
-                '<label>쿠폰1</label>' +
-                '<div class="cp-row">' +
-                  renderCouponPickerHTML('bb', 'coupon1', seq) +
-                  '<input type="text" id="bb-coupon1-' + seq + '" data-bbinput="coupon1" placeholder="뱃지를 먼저 선택하세요" disabled>' +
+                '<div class="coupon-field-head">' +
+                  '<label>쿠폰1</label>' +
                   '<button type="button" class="btn-remove-coupon" id="bb-coupon1-clear-' + seq + '" aria-label="쿠폰1 삭제">' +
                     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>' +
                   '</button>' +
                 '</div>' +
+                '<div class="cp-row">' +
+                  renderCouponPickerHTML('bb', 'coupon1', seq) +
+                  '<input type="text" id="bb-coupon1-' + seq + '" data-bbinput="coupon1" placeholder="뱃지를 먼저 선택하세요" disabled>' +
+                '</div>' +
               '</div>' +
               '<div class="field coupon-field">' +
-                '<label>쿠폰2</label>' +
-                '<div class="cp-row">' +
-                  renderCouponPickerHTML('bb', 'coupon2', seq) +
-                  '<input type="text" id="bb-coupon2-' + seq + '" data-bbinput="coupon2" placeholder="뱃지를 먼저 선택하세요" disabled>' +
+                '<div class="coupon-field-head">' +
+                  '<label>쿠폰2</label>' +
                   '<button type="button" class="btn-remove-coupon" id="bb-coupon2-clear-' + seq + '" aria-label="쿠폰2 삭제">' +
                     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>' +
                   '</button>' +
                 '</div>' +
+                '<div class="cp-row">' +
+                  renderCouponPickerHTML('bb', 'coupon2', seq) +
+                  '<input type="text" id="bb-coupon2-' + seq + '" data-bbinput="coupon2" placeholder="뱃지를 먼저 선택하세요" disabled>' +
+                '</div>' +
               '</div>' +
+            '</div>' +
+            '<div class="field-row single" id="bb-subcopy-field-' + seq + '" hidden>' +
+              '<div class="field"><label for="bb-subcopy-' + seq + '">서브카피</label><input type="text" id="bb-subcopy-' + seq + '" data-bbinput="subcopy" placeholder="예: 서브카피서브카피"></div>' +
             '</div>' +
             '<div class="field-row">' +
               '<div class="field"><label for="bb-copy1-' + seq + '">카피 줄1</label><input type="text" id="bb-copy1-' + seq + '" data-bbinput="copy1" placeholder="최대 글자 수 : 한 줄당 8자"></div>' +
@@ -2987,6 +3017,53 @@
       });
       wireCouponPicker(entry, 'bb', 'coupon1', seq, BILLBOARD_FIELDS.coupon1);
       wireCouponPicker(entry, 'bb', 'coupon2', seq, BILLBOARD_FIELDS.coupon2);
+
+      /* 2026-09-29(10차): "쿠폰 유형" 라디오(기본형/혜택형). 혜택형(기본값)은 지금까지의 쿠폰1/2
+         뱃지 선택 구조 그대로, 기본형은 쿠폰 뱃지가 사라지고 그 자리에 서브카피 한 줄이 대신 나와요.
+         폼에서 어느 쪽을 보여줄지, 레퍼런스 이미지 위에 어느 오버레이를 보여줄지, FIELD_MAP에 어느
+         필드를 실어 보낼지(시트/기획서에는 현재 선택된 유형의 값만 들어가야 함) 이 함수 하나에서
+         같이 처리해요. */
+      var couponFieldsRow = entry.querySelector('#bb-coupon-fields-' + seq);
+      var subcopyFieldRow = entry.querySelector('#bb-subcopy-field-' + seq);
+      var rtSubcopy = entry.querySelector('#rt-bb-subcopy-' + seq);
+      var couponFieldIds = ['bb-coupon1-' + seq, 'bb-coupon2-' + seq];
+      var subcopyFieldId = 'bb-subcopy-' + seq;
+      var rtCoupon1 = entry.querySelector('#rt-bb-coupon1-' + seq);
+      var rtCoupon2 = entry.querySelector('#rt-bb-coupon2-' + seq);
+      var maskCoupon1 = entry.querySelector('#bb-mask-coupon1-' + seq);
+      var maskCoupon2 = entry.querySelector('#bb-mask-coupon2-' + seq);
+      function setCouponType(type){
+        var isBasic = type === 'basic';
+        if (couponFieldsRow) couponFieldsRow.hidden = isBasic;
+        if (subcopyFieldRow) subcopyFieldRow.hidden = !isBasic;
+        if (rtSubcopy) rtSubcopy.style.display = isBasic ? '' : 'none';
+        if (isBasic) {
+          /* 뱃지 선택 상태(dataset.selectedBadge)는 그대로 두고(혜택형으로 되돌아가면 복원되도록),
+             화면에서만 코드 레벨로 숨겨요 — renderCouponBadgeSlot을 부르면 선택 상태를 보고 다시
+             켜버리므로 여기서는 안 부름. */
+          if (rtCoupon1) rtCoupon1.style.display = 'none';
+          if (rtCoupon2) rtCoupon2.style.display = 'none';
+          if (maskCoupon1) maskCoupon1.style.display = 'none';
+          if (maskCoupon2) maskCoupon2.style.display = 'none';
+          renderBillboardEntryText(seq);
+        } else {
+          renderCouponBadgeSlot(entry, 'bb', 'coupon1', seq, BILLBOARD_FIELDS.coupon1);
+          renderCouponBadgeSlot(entry, 'bb', 'coupon2', seq, BILLBOARD_FIELDS.coupon2);
+        }
+        if (entry._fieldGroup) {
+          var kept = entry._fieldGroup.fields.filter(function(f){
+            return couponFieldIds.indexOf(f.id) === -1 && f.id !== subcopyFieldId;
+          });
+          var extra = isBasic
+            ? [{id: subcopyFieldId, name: '서브카피', type: 'text'}]
+            : [{id: couponFieldIds[0], name: '쿠폰1', type: 'text'}, {id: couponFieldIds[1], name: '쿠폰2', type: 'text'}];
+          entry._fieldGroup.fields = kept.concat(extra);
+        }
+      }
+      var typeRadios = Array.prototype.slice.call(entry.querySelectorAll('[data-bbtype="coupontype"]'));
+      typeRadios.forEach(function(r){
+        r.addEventListener('change', function(){ if (r.checked) setCouponType(r.value); });
+      });
 
       /* 원데이빅딜의 다른 섹션들과 똑같이, 이 배너의 필드도 FIELD_MAP에 등록해서 기존 '구글시트 만들기'/
          '기획서 만들기' 루프가 자동으로 같이 처리하게 해요(배너 전용 시트/기획서 버튼이 따로 필요 없어짐).
