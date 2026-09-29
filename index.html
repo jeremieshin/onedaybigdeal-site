@@ -206,8 +206,8 @@
   .card-head h2{font-size:22.3px;margin:0;letter-spacing:-0.005em;}
   /* 2026-09-29(13차): 배지("디자인 페이지 카피 · 이미지 입력" 등) 위에 영문 아이레브로우
      ("DESIGN"/"BANNER")를 새로 추가하고, 기존 배지 글자 크기는 절반으로 줄임. */
-  .section-eyebrow{grid-column:1/-1;margin-bottom:4px;font-size:40px;font-weight:800;color:#111111;letter-spacing:-0.01em;}
-  .section-badge{grid-column:1/-1;margin-bottom:8px;font-size:15px;font-weight:700;color:var(--accent);letter-spacing:-0.01em;}
+  .section-eyebrow{grid-column:1/-1;margin-bottom:16px;font-size:50px;font-weight:800;color:#111111;letter-spacing:-0.01em;}
+  .section-badge{grid-column:1/-1;margin-bottom:8px;font-size:15px;font-weight:700;color:#FF0038;letter-spacing:-0.01em;}
 
   .field-row{display:flex;flex-direction:column;gap:14px;}
   .field-row.single{display:flex;}
@@ -403,7 +403,7 @@
 
   <div class="section-row" data-ref="hero">
     <div class="section-eyebrow">DESIGN</div>
-    <div class="section-badge">디자인 페이지 카피 · 이미지 입력</div>
+    <div class="section-badge">프로모션 페이지 카피를 입력하고, 이미지를 업로드해 주세요.</div>
     <div class="card-head"><h2>메인상단</h2></div>
     <div class="ref-panel">
       <div class="ref-img-wrap">
@@ -2915,7 +2915,7 @@
       entry.dataset.entrySeq = seq;
       entry.innerHTML =
         '<div class="section-eyebrow" style="display:none">BANNER</div>' +
-        '<div class="section-badge" style="display:none">배너 카피·이미지 입력</div>' +
+        '<div class="section-badge" style="display:none">배너 요청서 카피를 입력하고, 사용 할 이미지를 업로드해 주세요.<br>*배너 가이드의 카피제한 글자 수를 꼭 지켜주세요</div>' +
         '<div class="card-head">' +
           '<h2>메인빌보드</h2>' +
           '<button type="button" class="btn-remove-row" hidden aria-label="이 배너 삭제">' +
