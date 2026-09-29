@@ -3380,8 +3380,10 @@
         coupon1: {x:208, y:274, w:160, h:72},
         coupon2: {x:368, y:274, w:160, h:72}
       };
+      /* 2026-09-29(22차): "이미지 중앙형 버튼 크기는 고정이야" 요청 — 카피 길이와 상관없이 항상
+         200×44(스몰팝업 360×409 기준, 720 캔버스 기준으론 2배인 400×88)로 고정. */
       var SMALLPOPUP_B_CTA = {
-        box: {x:160, y:690, w:400, h:90},
+        box: {x:160, y:690, w:400, h:88},
         size: 32
       };
 
@@ -3449,18 +3451,18 @@
         var size = layout === 'b' ? SMALLPOPUP_B_CTA.size : SMALLPOPUP_CTA.size;
         var h = box.h * u;
         btn.style.top = (box.y * u) + 'px';
+        btn.style.left = (box.x * u) + 'px';
         btn.style.height = h + 'px';
         btn.style.borderRadius = (h / 2) + 'px';
         btn.style.fontSize = (size * u) + 'px';
-        btn.style.padding = '0 ' + (h * 0.42) + 'px';
         if (layout === 'b') {
-          /* B타입 버튼은 카피 길이에 따라 실제 폭(내용+패딩)이 달라지므로, A타입처럼 왼쪽을 고정하는
-             대신 렌더링 후 실제 폭을 재서 캔버스 가운데로 앉혀요. */
-          btn.style.left = (box.x * u) + 'px';
-          var bw = btn.offsetWidth;
-          btn.style.left = ((SMALLPOPUP_DIMS.w * u - bw) / 2) + 'px';
+          /* B타입 버튼은 카피 길이와 상관없이 크기가 고정이에요(요청: "이미지 중앙형 버튼 크기는
+             고정이야") — A타입처럼 내용에 맞춰 늘어나는 대신 폭도 명시적으로 고정폭을 줘요. */
+          btn.style.width = (box.w * u) + 'px';
+          btn.style.padding = '0';
         } else {
-          btn.style.left = (box.x * u) + 'px';
+          btn.style.width = '';
+          btn.style.padding = '0 ' + (h * 0.42) + 'px';
         }
       }
 
