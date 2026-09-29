@@ -72,12 +72,15 @@
      apply_nav.py의 .btn-add-type보다 항상 우선 적용돼요. */
   #btn-add-teaser,#btn-add-live,#btn-add-banner-entry,#btn-add-benefit{border-style:solid;border-color:#FF0038;color:#FF0038;background:#ffffff;}
   #btn-add-teaser:hover,#btn-add-live:hover,#btn-add-banner-entry:hover,#btn-add-benefit:hover{border-color:#FF0038;color:#FF0038;}
+  /* 2026-09-29(17차): 페이지 내 모든 X(삭제) 버튼을 빌보드배너 쿠폰 영역의 .btn-remove-coupon
+     크기·모양(20x20px, 아이콘 10x10px)으로 통일해달라는 요청 — .btn-remove-row/.btn-remove-benefit
+     둘 다 이 값에 맞춤(배경/테두리/색은 이미 세 버튼 모두 같은 토큰을 써서 그대로 둠). */
   .btn-remove-row{
     display:flex;align-items:center;justify-content:center;flex:none;
-    width:21px;height:21px;padding:0;border-radius:4px;
+    width:20px;height:20px;padding:0;border-radius:4px;
     font:inherit;color:var(--muted);background:var(--surface);border:1px solid var(--line-strong);cursor:pointer;
   }
-  .btn-remove-row svg{width:12px;height:12px;}
+  .btn-remove-row svg{width:10px;height:10px;}
   .btn-remove-row:hover{border-color:var(--accent);color:var(--accent);}
   .btn-remove-row[hidden]{display:none;}
 
@@ -236,7 +239,7 @@
   .section-eyebrow{grid-column:1/-1;margin-bottom:-8px;font-size:50px;font-weight:800;color:#111111;letter-spacing:-0.01em;line-height:1;}
   /* 2026-09-29(15차): 배지("프로모션 페이지 카피를 입력하고..." 등) 아래 다음 줄(카드 제목)과의
      간격을 16px 더 늘려달라는 요청 — 기존 margin-bottom 8px에 16px를 더해 24px로. */
-  .section-badge{grid-column:1/-1;margin-bottom:24px;font-size:15px;font-weight:700;color:#FF0038;letter-spacing:-0.01em;line-height:1.3;}
+  .section-badge{grid-column:1/-1;margin-bottom:24px;font-size:15px;font-weight:700;color:#FF0038;letter-spacing:-0.01em;line-height:1.4;}
 
   .field-row{display:flex;flex-direction:column;gap:14px;}
   .field-row.single{display:flex;}
@@ -283,10 +286,10 @@
   .btn-remove-benefit{
     position:absolute;top:0;right:0;
     display:flex;align-items:center;justify-content:center;
-    width:14px;height:14px;padding:0;border-radius:4px;
+    width:20px;height:20px;padding:0;border-radius:4px;
     font:inherit;color:var(--muted);background:var(--surface);border:1px solid var(--line-strong);cursor:pointer;
   }
-  .btn-remove-benefit svg{width:8px;height:8px;}
+  .btn-remove-benefit svg{width:10px;height:10px;}
   .btn-remove-benefit:hover{border-color:var(--accent);color:var(--accent);}
   .btn-remove-benefit[hidden]{display:none;}
   .btn-add-benefit{
