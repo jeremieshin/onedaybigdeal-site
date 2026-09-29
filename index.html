@@ -138,7 +138,7 @@
   .cp-badge-opt{flex:none;padding:1px;border:1.5px solid transparent;border-radius:7px;background:#fff;cursor:pointer;line-height:0;transition:border-color .15s;}
   .cp-badge-opt:hover{border-color:var(--line-strong);}
   .cp-badge-opt.selected{border-color:var(--accent);}
-  .cp-badge-opt img{display:block;width:40px;height:20px;}
+  .cp-badge-opt img{display:block;width:46px;height:23px;}
   .coupon-field input[type=text]:disabled{background:var(--line);color:var(--muted);cursor:not-allowed;}
   /* 혜택: 글자 없는 이미지 위 텍스트 레이어 (원본 720x1032 기준, 가운데 정렬) */
   .rtb{text-align:center;}
@@ -2693,7 +2693,13 @@
         rt.style.height = boxH + 'px';
         rt.style.background = '#ffffff';
         rt.style.borderRadius = Math.max(1, 2 * k * u) + 'px';
-        var fs = Math.min(boxH * 0.82, 20 * k * u);
+        /* 2026-09-28~29(9차): 뱃지 픽커 썸네일(원본 PNG에 미리 그려진 예시 텍스트)과 실제 레퍼런스
+           사진 위에 동적으로 얹히는 값 텍스트의 글자 크기 비율이 서로 안 맞는다는 제보로 계수를
+           0.82 -> 0.95 -> 0.97로 단계적으로 올려서 값 글자가 박스를 더 꽉 채우도록 조정. line-height를
+           1로 좁혀서 fs가 boxH에 가까워져도 박스 위아래로 삐져나오지 않게 하되, fs가 boxH를 그대로
+           넘어서게 두면(예: 1.0 이상) line-height:1이어도 넘칠 수 있어 1.0 밑으로 여유를 둠. */
+        rt.style.lineHeight = '1';
+        var fs = Math.min(boxH * 0.97, 24 * k * u);
         rt.style.fontSize = fs + 'px';
         var w = rt.scrollWidth, max = boxW - 4 * k * u;
         if (w > max && max > 0) {
