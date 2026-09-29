@@ -64,13 +64,14 @@
      apply_nav.py가 매 빌드 때 주입하는 CSS 블록에 정의돼 있어요(같은 클래스가 거기서
      나중에 다시 선언되기 때문에 여기 적어도 캐스케이드상 항상 덮어써짐) — 라운딩/색 등
      "전체 공통" 스타일을 바꿀 땐 apply_nav.py 쪽의 .btn-add-type 규칙을 고쳐야 반영돼요.
-     2026-09-29(14차): "+ 배너 추가"/"+ 라이브방송 추가" 두 버튼만(특가상품 추가는 그대로)
-     사용자가 올려준 참고 버튼처럼 스트록·텍스트 컬러를 #FF0038로 바꿔달라고 해서, id
-     선택자로 이 두 버튼만 targeting — id 선택자라 apply_nav.py의 .btn-add-type보다
-     항상 우선 적용돼요. 2026-09-29(15차): 배경을 #ffffff로, 테두리를 점선(dashed)에서
-     실선(solid)으로 바꿔달라는 추가 요청 반영. */
-  #btn-add-live,#btn-add-banner-entry{border-style:solid;border-color:#FF0038;color:#FF0038;background:#ffffff;}
-  #btn-add-live:hover,#btn-add-banner-entry:hover{border-color:#FF0038;color:#FF0038;}
+     2026-09-29(14~16차): 처음엔 "+ 배너 추가"/"+ 라이브방송 추가" 두 버튼만 참고 버튼처럼
+     흰 배경·실선·#FF0038 스트록/텍스트로 바꿨는데, 사용자가 "+ 특가상품 추가"도 똑같이
+     맞춰야 한다고 지적하면서 "동일하게 적용해야 하는 부분은 알아서 판단해서 바꿔달라"고
+     위임 — 페이지에서 같은 패턴("+ N 추가"로 반복 카드를 늘리는 버튼)인 "+ 혜택 추가"
+     (.btn-add-benefit)까지 포함해 네 버튼 전부 같은 스타일로 통일. id 선택자라
+     apply_nav.py의 .btn-add-type보다 항상 우선 적용돼요. */
+  #btn-add-teaser,#btn-add-live,#btn-add-banner-entry,#btn-add-benefit{border-style:solid;border-color:#FF0038;color:#FF0038;background:#ffffff;}
+  #btn-add-teaser:hover,#btn-add-live:hover,#btn-add-banner-entry:hover,#btn-add-benefit:hover{border-color:#FF0038;color:#FF0038;}
   .btn-remove-row{
     display:flex;align-items:center;justify-content:center;flex:none;
     width:21px;height:21px;padding:0;border-radius:4px;
@@ -192,7 +193,20 @@
   /* "쿠폰 유형" 기본형/혜택형 라디오 버튼(2026-09-29, 10차 — 드롭다운 말고 라디오 버튼으로 요청) */
   .cp-type-row{display:flex;gap:18px;}
   .cp-type-opt{display:flex;align-items:center;gap:6px;font-size:13.5px;color:var(--ink);cursor:pointer;width:fit-content;}
-  .cp-type-opt input[type=radio]{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;}
+  /* 2026-09-29(16차): 사용자가 올려준 참고 이미지대로 네이티브 라디오 대신 커스텀 링 디자인으로
+     교체 — 선택: 빨간 링(가운데 흰 구멍), 미선택: 얇은 회색 테두리 + 가운데 옅은 회색 점.
+     appearance:none으로 브라우저 기본 라디오 렌더링을 지우고, radial-gradient로 "링(또는 점)
+     + 배경" 두 겹을 한 번에 그림. */
+  .cp-type-opt input[type=radio]{
+    appearance:none;-webkit-appearance:none;margin:0;flex:none;
+    width:18px;height:18px;border-radius:50%;cursor:pointer;
+    border:1.5px solid #C4C4C4;
+    background:radial-gradient(circle,#D9D9D9 0 32%,#ffffff 32% 100%);
+  }
+  .cp-type-opt input[type=radio]:checked{
+    border:none;
+    background:radial-gradient(circle,#ffffff 0 36%,#FF0038 36% 100%);
+  }
   .bbrt-subcopy{font-weight:600;color:#111;letter-spacing:-0.01em;}
   /* 혜택: 글자 없는 이미지 위 텍스트 레이어 (원본 720x1032 기준, 가운데 정렬) */
   .rtb{text-align:center;}
