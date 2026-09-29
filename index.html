@@ -59,10 +59,10 @@
   .btn-add-row{margin-top:24px;}
   .btn-remove-row{
     display:flex;align-items:center;justify-content:center;flex:none;
-    width:14px;height:14px;padding:0;border-radius:3px;
+    width:21px;height:21px;padding:0;border-radius:4px;
     font:inherit;color:var(--muted);background:var(--surface);border:1px solid var(--line-strong);cursor:pointer;
   }
-  .btn-remove-row svg{width:8px;height:8px;}
+  .btn-remove-row svg{width:12px;height:12px;}
   .btn-remove-row:hover{border-color:var(--accent);color:var(--accent);}
   .btn-remove-row[hidden]{display:none;}
 
@@ -193,7 +193,9 @@
      "행 전체 헤더"예요. section-row가 grid이므로 1~-1 컬럼을 다 차지하게 하고 맨 앞
      자식으로 두면, grid 자동배치 규칙상 ref-panel/section-form이 자동으로 다음 줄
      (좌/우 두 칸)로 내려가서 정확히 원하는 위치에 놓여요. */
-  .card-head{display:flex;align-items:center;gap:10px;margin-bottom:0;grid-column:1/-1;}
+  /* 2026-09-29(11차): 삭제(X) 버튼을 제목 옆에 붙이지 않고 카드 우측 상단(제목과 같은 줄,
+     제목 높이에 맞춰)으로 이동 — 쿠폰 삭제 버튼 레이아웃과 동일한 방식. */
+  .card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:0;grid-column:1/-1;}
   .card-head h2{font-size:22.3px;margin:0;letter-spacing:-0.005em;}
   .section-badge{grid-column:1/-1;margin-bottom:8px;font-size:30px;font-weight:700;color:var(--accent);letter-spacing:-0.01em;}
 
