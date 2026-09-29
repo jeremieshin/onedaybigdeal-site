@@ -1001,12 +1001,26 @@
   /* 라이브방송은 피그마 레이어명이 MO/PC 둘 다 "라이브방송01/02/03"(첫 번째도 접미사+0채움)
      방식이라, 다른 섹션(예: 특가상품/특가상품2/특가상품3)과 표기 방식이 달라요. 시트 라벨을
      만들 때 MO_/PC_ 양쪽 다 이 함수를 거쳐서 피그마 레이어명과 정확히 맞춰요. 라이브방송이
-     아닌 섹션은 그대로 반환하므로 다른 섹션에 적용해도 안전해요. */
+     아닌 섹션은 그대로 반환하므로 다른 섹션에 적용해도 안전해요.
+     2026-09-29(12차): 사용자가 빌보드배너·스몰팝업 레이어에 #MO_ 태그를 직접 달아준 뒤(피그마
+     쪽 확인 후 "그래 맞아 잘 찾았어"로 확정) 그 실제 레이어명에 맞춰 두 가지 케이스를 추가함 —
+     화면 라벨(빌보드배너_혜택형/기본형, 스몰팝업 A/B타입 (…))은 사용자가 이전에 요청한 문구
+     그대로 유지하고, 시트로 나가는 라벨만 이 함수에서 피그마 레이어명으로 변환:
+       - 빌보드배너_혜택형/기본형 → 빌보드혜택형/기본형("배너_" 제거, #MO_빌보드혜택형_이미지 등과 일치)
+       - 스몰팝업 A/B타입 (이미지좌측형/이미지중앙형)[숫자] → 스몰팝업_A/B타입[숫자]
+         (괄호 설명·공백 제거해 #MO_스몰팝업_A타입_이미지 등과 일치, 2번째 이상 엔트리의 숫자
+         접미사는 라이브방송처럼 그대로 보존) */
   function sheetSectionLabel(displaySection){
-    var m = /^라이브방송(\d*)$/.exec(displaySection);
-    if (!m) return displaySection;
-    var n = m[1] ? Number(m[1]) : 1;
-    return '라이브방송' + (n < 10 ? '0' + n : String(n));
+    var live = /^라이브방송(\d*)$/.exec(displaySection);
+    if (live) {
+      var n = live[1] ? Number(live[1]) : 1;
+      return '라이브방송' + (n < 10 ? '0' + n : String(n));
+    }
+    var billboard = /^빌보드배너_(혜택형|기본형)$/.exec(displaySection);
+    if (billboard) return '빌보드' + billboard[1];
+    var smallpopup = /^스몰팝업 (A|B)타입 \([^)]*\)(\d*)$/.exec(displaySection);
+    if (smallpopup) return '스몰팝업_' + smallpopup[1] + '타입' + smallpopup[2];
+    return displaySection;
   }
 
   document.querySelectorAll('input[type=file]').forEach(function(inp){
