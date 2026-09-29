@@ -67,8 +67,9 @@
      2026-09-29(14차): "+ 배너 추가"/"+ 라이브방송 추가" 두 버튼만(특가상품 추가는 그대로)
      사용자가 올려준 참고 버튼처럼 스트록·텍스트 컬러를 #FF0038로 바꿔달라고 해서, id
      선택자로 이 두 버튼만 targeting — id 선택자라 apply_nav.py의 .btn-add-type보다
-     항상 우선 적용돼요. */
-  #btn-add-live,#btn-add-banner-entry{border-color:#FF0038;color:#FF0038;}
+     항상 우선 적용돼요. 2026-09-29(15차): 배경을 #ffffff로, 테두리를 점선(dashed)에서
+     실선(solid)으로 바꿔달라는 추가 요청 반영. */
+  #btn-add-live,#btn-add-banner-entry{border-style:solid;border-color:#FF0038;color:#FF0038;background:#ffffff;}
   #btn-add-live:hover,#btn-add-banner-entry:hover{border-color:#FF0038;color:#FF0038;}
   .btn-remove-row{
     display:flex;align-items:center;justify-content:center;flex:none;
@@ -289,6 +290,12 @@
     font-family:inherit;font-size:13px;font-weight:500;
     text-transform:none;letter-spacing:normal;
   }
+  /* 2026-09-29(15차): "커밍순"(예정딜 N) 서브타이틀도 "날짜"/"브랜드명" 필드 라벨(.field label:
+     13px, weight 500, 일반 폰트)과 같은 크기·폰트로 맞춰달라는 요청 — 혜택 섹션과 동일한 override. */
+  .section-row[data-ref="upcoming"] .sub-card .sub-title{
+    font-family:inherit;font-size:13px;font-weight:500;color:var(--muted);
+    text-transform:none;letter-spacing:normal;
+  }
 
   .util-row{display:flex;flex-direction:column;gap:7px;}
   .util-row .hint{font-size:12px;color:var(--muted);margin-top:-2px;}
@@ -444,7 +451,7 @@
       <div class="field-row single">
         <label class="upload" for="h-image">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>
-          <span>모델컷이미지</span>
+          <span>이미지 업로드</span>
           <span class="upload-note">*메인상단2 동시적용</span>
           <span class="upload-filename" id="h-image-name"></span>
         </label>
@@ -529,7 +536,7 @@
           <div class="sub-title">혜택1</div>
           <label class="upload" for="b1-image">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>
-            <span>아이콘이미지</span>
+            <span>이미지 업로드</span>
             <span class="upload-filename" id="b1-image-name"></span>
           </label>
           <input type="file" accept="image/*" id="b1-image" class="visually-hidden">
@@ -544,7 +551,7 @@
           <div class="sub-title">혜택2</div>
           <label class="upload" for="b2-image">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>
-            <span>아이콘이미지</span>
+            <span>이미지 업로드</span>
             <span class="upload-filename" id="b2-image-name"></span>
           </label>
           <input type="file" accept="image/*" id="b2-image" class="visually-hidden">
@@ -559,7 +566,7 @@
           <div class="sub-title">혜택3</div>
           <label class="upload" for="b3-image">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>
-            <span>아이콘이미지</span>
+            <span>이미지 업로드</span>
             <span class="upload-filename" id="b3-image-name"></span>
           </label>
           <input type="file" accept="image/*" id="b3-image" class="visually-hidden">
@@ -602,7 +609,7 @@
       <div class="field-row single">
         <label class="upload" for="t-image">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>
-          <span>이미지</span>
+          <span>이미지 업로드</span>
           <span class="upload-filename" id="t-image-name"></span>
         </label>
         <input type="file" accept="image/*" id="t-image" class="visually-hidden">
@@ -644,7 +651,7 @@
       <div class="field-row single">
         <label class="upload" for="lv-image">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>
-          <span>썸네일이미지</span>
+          <span>이미지 업로드</span>
           <span class="upload-filename" id="lv-image-name"></span>
         </label>
         <input type="file" accept="image/*" id="lv-image" class="visually-hidden">
@@ -699,10 +706,10 @@
     <div class="section-form">
       <div class="sub-grid deals">
         <div class="sub-card">
-          <div class="sub-title">예정딜 1</div>
+          <div class="sub-title">커밍순 1</div>
           <label class="upload" for="c1-image">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>
-            <span>썸네일이미지</span>
+            <span>이미지 업로드</span>
             <span class="upload-filename" id="c1-image-name"></span>
           </label>
           <input type="file" accept="image/*" id="c1-image" class="visually-hidden">
@@ -710,10 +717,10 @@
           <div class="field"><label for="c1-brand">브랜드명</label><input type="text" id="c1-brand" placeholder="예: 동원에프앤비"></div>
         </div>
         <div class="sub-card">
-          <div class="sub-title">예정딜 2</div>
+          <div class="sub-title">커밍순 2</div>
           <label class="upload" for="c2-image">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>
-            <span>썸네일이미지</span>
+            <span>이미지 업로드</span>
             <span class="upload-filename" id="c2-image-name"></span>
           </label>
           <input type="file" accept="image/*" id="c2-image" class="visually-hidden">
@@ -721,10 +728,10 @@
           <div class="field"><label for="c2-brand">브랜드명</label><input type="text" id="c2-brand" placeholder="예: 농심"></div>
         </div>
         <div class="sub-card">
-          <div class="sub-title">예정딜 3</div>
+          <div class="sub-title">커밍순 3</div>
           <label class="upload" for="c3-image">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>
-            <span>썸네일이미지</span>
+            <span>이미지 업로드</span>
             <span class="upload-filename" id="c3-image-name"></span>
           </label>
           <input type="file" accept="image/*" id="c3-image" class="visually-hidden">
@@ -732,10 +739,10 @@
           <div class="field"><label for="c3-brand">브랜드명</label><input type="text" id="c3-brand" placeholder="예: 지오다노"></div>
         </div>
         <div class="sub-card">
-          <div class="sub-title">예정딜 4</div>
+          <div class="sub-title">커밍순 4</div>
           <label class="upload" for="c4-image">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>
-            <span>썸네일이미지</span>
+            <span>이미지 업로드</span>
             <span class="upload-filename" id="c4-image-name"></span>
           </label>
           <input type="file" accept="image/*" id="c4-image" class="visually-hidden">
@@ -2961,7 +2968,7 @@
             '<div class="field-row single bb-upload-row">' +
               '<label class="upload" for="bb-image-' + seq + '">' +
                 '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="10" r="1.4"/><path d="M21 16l-5.5-5.5L9 17"/></svg>' +
-                '<span>모델컷/배경이미지</span>' +
+                '<span>이미지 업로드</span>' +
                 '<span class="upload-filename" id="bb-image-' + seq + '-name"></span>' +
               '</label>' +
               '<input type="file" accept="image/*" id="bb-image-' + seq + '" data-bbinput="image" class="visually-hidden">' +
