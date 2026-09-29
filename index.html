@@ -272,6 +272,20 @@
   .upload svg{width:18px;height:18px;stroke:currentColor;flex:none;}
   .upload-filename{font-weight:600;color:var(--ink);font-size:11px;word-break:break-all;}
   .upload-note{font-size:10.5px;color:var(--accent);font-weight:600;}
+  /* 2026-09-29(18차): 이미지 업로드 후 다시 지울 방법이 없다는 요청 — 업로드 박스 우측 상단에
+     페이지 내 다른 X버튼들과 동일한 크기·모양(20x20px, 4px 라운딩, 아이콘 10x10)의 삭제 버튼을
+     추가. .upload가 <label for>라 버튼을 그 안에 두면 클릭 시 파일 선택창이 같이 열리므로,
+     형제 요소로 빼고 .upload-wrap에서 position:relative로 우측 상단에 얹음(wireImageClear() 참고). */
+  .upload-wrap{position:relative;}
+  .btn-remove-image{
+    position:absolute;top:6px;right:6px;
+    display:flex;align-items:center;justify-content:center;flex:none;
+    width:20px;height:20px;padding:0;border-radius:4px;
+    font:inherit;color:var(--muted);background:var(--surface);border:1px solid var(--line-strong);cursor:pointer;
+  }
+  .btn-remove-image svg{width:10px;height:10px;}
+  .btn-remove-image:hover{border-color:var(--accent);color:var(--accent);}
+  .btn-remove-image[hidden]{display:none;}
 
   .sub-grid.deals{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
   @media (max-width:760px){.sub-grid.deals{grid-template-columns:repeat(2,1fr);}}
@@ -466,6 +480,7 @@
         <div class="field"><label for="h-sub">서브카피</label><input type="text" id="h-sub" placeholder="예: 오늘 단 하루! 설화수로 완성하는 추석 선물"></div>
       </div>
       <div class="field-row single">
+        <div class="upload-wrap">
         <label class="upload" for="h-image">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>
           <span>이미지 업로드</span>
@@ -473,6 +488,10 @@
           <span class="upload-filename" id="h-image-name"></span>
         </label>
         <input type="file" accept="image/*" id="h-image" class="visually-hidden">
+        <button type="button" class="btn-remove-image" aria-label="이미지 삭제" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+        </button>
+        </div>
       </div>
     </div>
   </div>
@@ -551,12 +570,17 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
           </button>
           <div class="sub-title">혜택1</div>
+          <div class="upload-wrap">
           <label class="upload" for="b1-image">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>
             <span>이미지 업로드</span>
             <span class="upload-filename" id="b1-image-name"></span>
           </label>
           <input type="file" accept="image/*" id="b1-image" class="visually-hidden">
+          <button type="button" class="btn-remove-image" aria-label="이미지 삭제" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+          </button>
+          </div>
           <div class="field"><label for="b1-main">메인카피</label><input type="text" id="b1-main" placeholder="예: 11pay 적립"></div>
           <div class="field"><label for="b1-sub1">서브카피1</label><input type="text" id="b1-sub1" placeholder="예: 11pay 카드 결제 시"></div>
           <div class="field"><label for="b1-sub2">서브카피2</label><input type="text" id="b1-sub2" placeholder="예: 최대 5% 적립"></div>
@@ -566,12 +590,17 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
           </button>
           <div class="sub-title">혜택2</div>
+          <div class="upload-wrap">
           <label class="upload" for="b2-image">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>
             <span>이미지 업로드</span>
             <span class="upload-filename" id="b2-image-name"></span>
           </label>
           <input type="file" accept="image/*" id="b2-image" class="visually-hidden">
+          <button type="button" class="btn-remove-image" aria-label="이미지 삭제" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+          </button>
+          </div>
           <div class="field"><label for="b2-main">메인카피</label><input type="text" id="b2-main" placeholder="예: 추가 증정"></div>
           <div class="field"><label for="b2-sub1">서브카피1</label><input type="text" id="b2-sub1" placeholder="예: 양반죽 구매 시"></div>
           <div class="field"><label for="b2-sub2">서브카피2</label><input type="text" id="b2-sub2" placeholder="예: 한우사골곰탕 증정"></div>
@@ -581,12 +610,17 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
           </button>
           <div class="sub-title">혜택3</div>
+          <div class="upload-wrap">
           <label class="upload" for="b3-image">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>
             <span>이미지 업로드</span>
             <span class="upload-filename" id="b3-image-name"></span>
           </label>
           <input type="file" accept="image/*" id="b3-image" class="visually-hidden">
+          <button type="button" class="btn-remove-image" aria-label="이미지 삭제" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+          </button>
+          </div>
           <div class="field"><label for="b3-main">메인카피</label><input type="text" id="b3-main" placeholder="예: T멤버십"></div>
           <div class="field"><label for="b3-sub1">서브카피1</label><input type="text" id="b3-sub1" placeholder="예: 11%"></div>
           <div class="field"><label for="b3-sub2">서브카피2</label><input type="text" id="b3-sub2" placeholder="예: 추가 할인"></div>
@@ -624,12 +658,17 @@
         <div class="field"><label for="t-cta">CTA텍스트</label><input type="text" id="t-cta" placeholder="예: 완전 럭키! 오늘의 특가 보러가기"></div>
       </div>
       <div class="field-row single">
+        <div class="upload-wrap">
         <label class="upload" for="t-image">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>
           <span>이미지 업로드</span>
           <span class="upload-filename" id="t-image-name"></span>
         </label>
         <input type="file" accept="image/*" id="t-image" class="visually-hidden">
+        <button type="button" class="btn-remove-image" aria-label="이미지 삭제" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+        </button>
+        </div>
       </div>
     </div>
   </div>
@@ -666,12 +705,17 @@
         <div class="field"><label for="lv-sub">서브카피</label><input type="text" id="lv-sub" placeholder="예: 식음 크레딧 3만원권+비치백 특전"></div>
       </div>
       <div class="field-row single">
+        <div class="upload-wrap">
         <label class="upload" for="lv-image">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>
           <span>이미지 업로드</span>
           <span class="upload-filename" id="lv-image-name"></span>
         </label>
         <input type="file" accept="image/*" id="lv-image" class="visually-hidden">
+        <button type="button" class="btn-remove-image" aria-label="이미지 삭제" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+        </button>
+        </div>
       </div>
     </div>
   </div>
@@ -724,45 +768,65 @@
       <div class="sub-grid deals">
         <div class="sub-card">
           <div class="sub-title">커밍순 1</div>
+          <div class="upload-wrap">
           <label class="upload" for="c1-image">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>
             <span>이미지 업로드</span>
             <span class="upload-filename" id="c1-image-name"></span>
           </label>
           <input type="file" accept="image/*" id="c1-image" class="visually-hidden">
+          <button type="button" class="btn-remove-image" aria-label="이미지 삭제" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+          </button>
+          </div>
           <div class="field"><label for="c1-date">날짜</label><input type="text" id="c1-date" placeholder="예: 09.22 (화)"></div>
           <div class="field"><label for="c1-brand">브랜드명</label><input type="text" id="c1-brand" placeholder="예: 동원에프앤비"></div>
         </div>
         <div class="sub-card">
           <div class="sub-title">커밍순 2</div>
+          <div class="upload-wrap">
           <label class="upload" for="c2-image">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>
             <span>이미지 업로드</span>
             <span class="upload-filename" id="c2-image-name"></span>
           </label>
           <input type="file" accept="image/*" id="c2-image" class="visually-hidden">
+          <button type="button" class="btn-remove-image" aria-label="이미지 삭제" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+          </button>
+          </div>
           <div class="field"><label for="c2-date">날짜</label><input type="text" id="c2-date" placeholder="예: 09.24 (목)"></div>
           <div class="field"><label for="c2-brand">브랜드명</label><input type="text" id="c2-brand" placeholder="예: 농심"></div>
         </div>
         <div class="sub-card">
           <div class="sub-title">커밍순 3</div>
+          <div class="upload-wrap">
           <label class="upload" for="c3-image">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>
             <span>이미지 업로드</span>
             <span class="upload-filename" id="c3-image-name"></span>
           </label>
           <input type="file" accept="image/*" id="c3-image" class="visually-hidden">
+          <button type="button" class="btn-remove-image" aria-label="이미지 삭제" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+          </button>
+          </div>
           <div class="field"><label for="c3-date">날짜</label><input type="text" id="c3-date" placeholder="예: 09.29 (화)"></div>
           <div class="field"><label for="c3-brand">브랜드명</label><input type="text" id="c3-brand" placeholder="예: 지오다노"></div>
         </div>
         <div class="sub-card">
           <div class="sub-title">커밍순 4</div>
+          <div class="upload-wrap">
           <label class="upload" for="c4-image">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>
             <span>이미지 업로드</span>
             <span class="upload-filename" id="c4-image-name"></span>
           </label>
           <input type="file" accept="image/*" id="c4-image" class="visually-hidden">
+          <button type="button" class="btn-remove-image" aria-label="이미지 삭제" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+          </button>
+          </div>
           <div class="field"><label for="c4-date">날짜</label><input type="text" id="c4-date" placeholder="예: 10.01 (목)"></div>
           <div class="field"><label for="c4-brand">브랜드명</label><input type="text" id="c4-brand" placeholder="예: 에스트라"></div>
         </div>
@@ -886,6 +950,29 @@
       }
     });
   });
+
+  /* 2026-09-29(18차): 이미지 업로드 필드 어디서든(정적 필드 + 특가상품/라이브방송/빌보드배너/
+     스몰팝업처럼 나중에 동적으로 추가되는 카드까지) 업로드한 파일을 다시 지울 수 있게 하는
+     공용 함수. .upload-wrap 안에서 형제로 찾는 방식이라 id 접미사(카드 복제 시 t-image2 등)가
+     무엇이든 상관없이 항상 정확히 짝지어져요. input.value를 비우고 'change' 이벤트를 다시
+     발생시키는 방식이라, 이미 있는 파일명 표시(.upload-filename)/실시간 미리보기(.ref-photo) 등
+     '파일 없음' 분기를 그대로 재사용해요(따로 각각 지우는 코드를 안 만들어도 됨).
+     함수 선언이라 호이스팅되므로, 이 아래(banner_block.js 포함)에서 선언 순서와 무관하게 호출 가능. */
+  function wireImageClear(inp){
+    var wrap = inp.closest('.upload-wrap');
+    var clearBtn = wrap && wrap.querySelector('.btn-remove-image');
+    if (!clearBtn) return;
+    clearBtn.addEventListener('click', function(e){
+      e.preventDefault();
+      inp.value = '';
+      inp.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+    inp.addEventListener('change', function(){
+      var f = inp.files && inp.files[0];
+      clearBtn.hidden = !f;
+    });
+  }
+  document.querySelectorAll('input[type=file]').forEach(wireImageClear);
 
   var FIELD_MAP = [
     {section:'메인상단', fields:[
@@ -1636,6 +1723,7 @@
 
     function wireRow(row, suffix){
       row.querySelectorAll('input[type=file]').forEach(function(inp){
+        wireImageClear(inp);
         var photo = row.querySelector('.ref-photo[data-field="' + inp.id + '"]');
         if (!photo) return;
         inp.addEventListener('change', function(){
@@ -2983,12 +3071,17 @@
           '</div>' +
           '<div class="section-form">' +
             '<div class="field-row single bb-upload-row">' +
+              '<div class="upload-wrap">' +
               '<label class="upload" for="bb-image-' + seq + '">' +
                 '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="10" r="1.4"/><path d="M21 16l-5.5-5.5L9 17"/></svg>' +
                 '<span>이미지 업로드</span>' +
                 '<span class="upload-filename" id="bb-image-' + seq + '-name"></span>' +
               '</label>' +
               '<input type="file" accept="image/*" id="bb-image-' + seq + '" data-bbinput="image" class="visually-hidden">' +
+              '<button type="button" class="btn-remove-image" aria-label="이미지 삭제" hidden>' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>' +
+              '</button>' +
+              '</div>' +
             '</div>' +
             '<div class="field-row single">' +
               '<div class="field">' +
@@ -3035,6 +3128,7 @@
           '</div>';
 
       var fileInput = entry.querySelector('[data-bbinput="image"]');
+      wireImageClear(fileInput);
       var photo = entry.querySelector('.ref-photo[data-bbfield="image"]');
       var nameEl = entry.querySelector('#bb-image-' + seq + '-name');
       fileInput.addEventListener('change', function(){
