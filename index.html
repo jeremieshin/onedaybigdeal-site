@@ -2809,6 +2809,15 @@
        똑같은 비율로 둥글게 보이도록 renderCouponBadgeSlot()에서 inline으로 설정해요. */
     var COUPON_BADGE_CORNER_R = 3;
 
+    /* renderCouponBadgeSlot()이 포커스 하이라이트(HIGHLIGHT_MAP)를 등록할 때, section-row를 찾는
+       key(SECTION_DIMS/HIGHLIGHT_MAP의 img 값)를 prefix로부터 알아내는 표예요. 쿠폰 컴포넌트를 새
+       배너 타입에 재사용할 때(prefix만 바꿔 씀) 여기에도 그 prefix→refKey를 같이 추가해야, 그 배너의
+       실제 이미지 크기(SECTION_DIMS)를 써서 하이라이트 박스 위치/크기가 정확히 계산돼요. 이걸 빠뜨리면
+       다른 배너의 refKey가 그대로 남아(과거 실수: 스몰팝업 쿠폰에서 'billboard'+seq로 하드코딩되어
+       있었음) 그 배너의 세로 크기 기준으로 퍼센트 계산을 해서, 포커스 시 미리보기의 주황 박스가
+       엉뚱한 자리/크기로 보이는 버그가 있었어요. */
+    var COUPON_PREFIX_REFKEY = { bb: 'billboard', sp: 'smallpopup' };
+
     /* 2026-09-29(10차): 기존엔 뱃지 10개가 한 줄에 늘어선 버튼 목록이었는데, 사용자가 "텍스트 입력창
        좌측에 드롭다운 방식으로" 요청 → 평소엔 접혀 있는 트리거 버튼(선택된 뱃지 미리보기 + 화살표) 하나만
        입력창 옆에 두고, 클릭하면 그 아래로 전체 뱃지 목록 패널이 펼쳐지는 방식으로 교체. */
@@ -2941,7 +2950,7 @@
          실제 뱃지 자리와 안 맞는 채로 주황 박스 + 어두운 비네트가 겹쳐 뱃지가 잘려 보이는 것처럼
          이상하게 보였어요(쿠폰 종류를 바꿀 때마다 값 자리가 달라지므로 이 박스도 같이 갱신). */
       HIGHLIGHT_MAP[prefix + '-' + slotKey + '-' + seq] = {
-        img: 'billboard' + seq,
+        img: (COUPON_PREFIX_REFKEY[prefix] || prefix) + seq,
         x: fieldBox.x + badge.mask.x * k,
         y: fieldBox.y + badge.mask.y * k,
         w: badge.mask.w * k,
