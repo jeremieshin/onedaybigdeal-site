@@ -254,10 +254,13 @@
   /* 혜택 1~2개: CTA가 버튼 대신 쿠폰바([뱃지 | 점선 구분선 | CTA카피 ... 화살표박스])로 바뀌어요.
      뱃지는 renderCouponBadgeSlot()이 그리고, 나머지(바 배경/구분선/카피/화살표)는 여기 새 요소로 그려요. */
   .pd-bar{position:absolute;background:#fff;box-sizing:border-box;}
-  /* 2026-09-29(26차): 레퍼런스 실측 결과 실제 디자인엔 점선 구분선이 없어서(뱃지 자체 테두리가
-     구분 역할) JS에서 항상 display:none으로 둬요 — 엘리먼트 자체는 렌더 함수의 null 체크 때문에
-     지우지 않고 남겨둬요. */
-  .pd-bar-divider{position:absolute;border-left:1px dashed rgba(17,17,17,.28);}
+  /* 2026-09-29(27차): "혜택 내용 이미지는 이렇게 반영해줘 중간에 점선이 없잖아" 재수정 — 26차에서
+     "점선 없음"으로 판단한 건 어두운 픽셀만 스캔한 잘못된 측정이었어요(연한 살구빛 점선이라 못
+     잡음). 새 레퍼런스(d4ae7fb6, 328x44) 실측 결과 #E8D5CB 색, 400 스케일 기준 4px 주기(점 2px+
+     공백 2px)의 점선이 실제로 존재 — border-style:dotted는 정밀 제어가 안 돼서 대신 세로
+     repeating-linear-gradient로 그려요. 폭 1px 고정, 점/주기 길이는 JS(renderProductDetailBar)에서
+     800 스케일 값(점 4px/주기 8px)을 u로 다시 스케일해서 매번 갱신. */
+  .pd-bar-divider{position:absolute;width:1px;background-repeat:repeat-y;}
   .pd-bar-text{position:absolute;font-weight:700;color:#111;letter-spacing:-0.01em;white-space:nowrap;line-height:1;}
   .pd-bar-arrow{position:absolute;display:flex;align-items:center;justify-content:center;background:#111;box-sizing:border-box;}
   /* 2026-09-29(26차): "혜택영역에 쿠폰 이미지가 안 보여" 재제보 — 원인은 .pd-bar(흰 배경 바)가
@@ -3948,10 +3951,15 @@
         bg.style.borderRadius = Math.max(2, 8 * u) + 'px';
 
         var inset = B.h * 0.16;
-        divider.style.display = 'none'; // 2026-09-29(26차): 레퍼런스에 점선 구분선 없음 확인, 항상 숨김
+        /* 2026-09-29(27차): 점선 구분선 복구 — 레퍼런스(d4ae7fb6) 실측: 색상 #E8D5CB, 400 스케일
+           기준 점 2px/공백 2px(주기 4px) → 800 스케일로 배로 하면 점 4px/주기 8px. u로 다시 스케일. */
+        divider.style.display = 'block';
         divider.style.left = ((B.x + B.dividerOffsetX) * u) + 'px';
         divider.style.top = ((barY + inset) * u) + 'px';
         divider.style.height = ((B.h - inset * 2) * u) + 'px';
+        var dividerDot = 4 * u, dividerPeriod = 8 * u;
+        divider.style.backgroundImage = 'repeating-linear-gradient(to bottom, #E8D5CB 0, #E8D5CB ' +
+          dividerDot + 'px, transparent ' + dividerDot + 'px, transparent ' + dividerPeriod + 'px)';
 
         textEl.style.display = 'block';
         textEl.textContent = (ctaInput && ctaInput.value.replace(/^\s+|\s+$/g, '')) || B.sample;
