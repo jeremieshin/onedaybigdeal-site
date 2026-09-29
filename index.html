@@ -60,6 +60,10 @@
   .repeat-list{display:flex;flex-direction:column;}
   .repeat-list .section-row + .section-row{margin-top:64px;padding-top:64px;border-top:1px solid var(--line);}
   .btn-add-row{margin-top:24px;}
+  /* .btn-add-type("+ 특가상품 추가" 등 추가 버튼)의 실제 스타일은 이 파일이 아니라
+     apply_nav.py가 매 빌드 때 주입하는 CSS 블록에 정의돼 있어요(같은 클래스가 거기서
+     나중에 다시 선언되기 때문에 여기 적어도 캐스케이드상 항상 덮어써짐) — 라운딩/색 등을
+     바꿀 땐 apply_nav.py 쪽의 .btn-add-type 규칙을 고쳐야 실제로 반영돼요. */
   .btn-remove-row{
     display:flex;align-items:center;justify-content:center;flex:none;
     width:21px;height:21px;padding:0;border-radius:4px;
@@ -72,7 +76,7 @@
   .ref-panel{display:flex;flex-direction:column;}
   .ref-img-wrap{
     position:relative;border:1px solid var(--line-strong);
-    overflow:hidden;background:var(--surface-2);box-shadow:var(--shadow);
+    overflow:hidden;background:var(--surface-2);
   }
   .ref-img-wrap img{display:block;width:100%;height:auto;}
   .ref-img-wrap .ref-photo{position:absolute;display:none;object-fit:cover;}
@@ -361,7 +365,7 @@
      별도 테두리 박스 없이 자연스럽게 이어지도록 함. ===== */
   .btn-add-type{
     font:inherit;font-size:14.5px;font-weight:700;color:var(--ink);background:var(--surface);
-    border:1.5px dashed var(--line-strong);border-radius:12px;padding:16px;cursor:pointer;width:100%;
+    border:1.5px dashed var(--line-strong);border-radius:4px;padding:16px;cursor:pointer;width:100%;
   }
   .btn-add-type:hover{border-color:var(--accent);color:var(--accent);}
 </style>
