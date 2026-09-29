@@ -240,28 +240,32 @@
      재사용해요. */
   .pdrt-headline{font-weight:800;color:#111;letter-spacing:-0.02em;}
   .pdrt-subcopy{font-weight:500;color:#111;letter-spacing:-0.01em;}
-  /* 기본형(혜택 0개) CTA "바로가기 >" — 2026-09-29(25차): "바로가기 버튼은 저 이미지가 아니야.
-     지금 내가 업로드한 이미지로 적용해줘" 요청으로, CSS로 그린 알약 대신 사용자가 업로드한 버튼
-     PNG(글자/화살표를 지운 테두리+흰배경 "크롬"만 남긴 버전)를 border-image로 적용해요. 카피
-     길이에 따라 버튼 너비가 늘어나도(가운데 곧은 변만 늘어나고 모서리 라운드는 안 찌그러지도록)
-     border-image-slice:...fill + border-image-repeat:stretch를 씀 — 배경색/테두리를 그대로 CSS로
-     그리는 대신 이미지 자체를 9-slice로 써요. border-image-width/border-width는 JS(renderProductDetailCta)에서
-     버튼 높이(u 스케일 반영)에 비례해서 매번 갱신. */
+  /* 기본형(혜택 0개) CTA "바로가기 >" — 2026-09-29(26차): border-image로 실제 PNG를 쓰던 방식을
+     되돌리고 순수 CSS로 그려요. "버튼 안에 컬러가 화이트가 아니라 투명이야. 박스 스트록이랑
+     버튼명, 그리고 화살표 이것만 보이면 돼" + "네가 만들 수 있으면 그게 더 좋고" 요청 — 배경을
+     완전 투명(사진이 그대로 비치게)으로 두고 얇은 테두리 + 텍스트 + 화살표만 그려요. border-radius/
+     border-width는 JS(renderProductDetailCta)에서 버튼 높이(u 스케일 반영)에 비례해서 매번 갱신. */
   .pd-cta-basic{
     display:inline-flex;align-items:center;justify-content:center;gap:0.3em;
-    background:#fff;color:#111;font-weight:700;letter-spacing:-0.01em;
-    border-style:solid;box-sizing:border-box;
-    border-image-source:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAANIAAABACAYAAABvNykKAAAB+UlEQVR4nO3Y0W0TQRRG4XO3ApeQDnAqIKkg6QA6IFQSu4PQAakg6YAtwSWkg8vDTogljILQrxjD+aSrtdf7MC9H49niZxfAFXANnB34XfpfzcDc3R+rqg4+0d0N3ALtOM6rczuaAaAAururagbWwBOwBR67+wFJAFTVOXADfBi35u5e1972dDse2HX32ZuvUDoxVbVjOfpsgM81diMA9nYqSa+oqidgBVxOVXU37t/94nlJh23H9XpiORft35T0ex7H9apY3kD4t076A8/HounI65D+CYYkBRiSFGBIUoAhSQGGJAUYkhRgSFKAIUkBhiQFGJIUYEhSgCFJAYYkBRiSFGBIUoAhSQGGJAUYkhRgSFKAIUkBhiQFGJIUYEhSgCFJAYYkBRiSFGBIUoAhSQGGJAUYkhRgSFKAIUkBhiQFGJIUYEhSgCFJAYYkBRiSFGBIUoAhSQGGJAUYkhRgSFKAIUkBhiQFGJIUYEhSgCFJAROwA6iqy+MuRTotVXU+Ps4TcD++XBxnOdLJ+jSuc7EE9AA8dffqWCuSTk1VAdDdTMAjsAVWVbU73rKk07HXyrZqJNXdXVUzsB4/3gHb7v721guU/lbjPcJ74AZYAXN3r587ApaYgA3QjuO8OpvRDAAvJQ1jd/oCvONlh5K0vOG+B76yHIl++A7fOflhBFQ33QAAAABJRU5ErkJggg==');
-    border-image-slice:32;
-    border-image-repeat:stretch;
+    background:transparent;color:#111;font-weight:700;letter-spacing:-0.01em;
+    border-style:solid;border-color:#111;box-sizing:border-box;
   }
-  .pd-cta-basic .rt-chev{display:block;height:0.58em;width:auto;flex:none;position:relative;top:-0.02em;}
+  .pd-cta-basic .rt-chev{display:block;flex:none;position:relative;top:-0.02em;stroke:#111;}
   /* 혜택 1~2개: CTA가 버튼 대신 쿠폰바([뱃지 | 점선 구분선 | CTA카피 ... 화살표박스])로 바뀌어요.
      뱃지는 renderCouponBadgeSlot()이 그리고, 나머지(바 배경/구분선/카피/화살표)는 여기 새 요소로 그려요. */
   .pd-bar{position:absolute;background:#fff;box-sizing:border-box;}
+  /* 2026-09-29(26차): 레퍼런스 실측 결과 실제 디자인엔 점선 구분선이 없어서(뱃지 자체 테두리가
+     구분 역할) JS에서 항상 display:none으로 둬요 — 엘리먼트 자체는 렌더 함수의 null 체크 때문에
+     지우지 않고 남겨둬요. */
   .pd-bar-divider{position:absolute;border-left:1px dashed rgba(17,17,17,.28);}
   .pd-bar-text{position:absolute;font-weight:700;color:#111;letter-spacing:-0.01em;white-space:nowrap;line-height:1;}
   .pd-bar-arrow{position:absolute;display:flex;align-items:center;justify-content:center;background:#111;box-sizing:border-box;}
+  /* 2026-09-29(26차): "혜택영역에 쿠폰 이미지가 안 보여" 재제보 — 원인은 .pd-bar(흰 배경 바)가
+     쿠폰 뱃지(.ref-mask/.rt, DOM상 더 앞에 위치)보다 나중에 그려져서 z-index 없이 기본 스태킹
+     순서(나중 요소가 위)로 인해 뱃지를 완전히 덮어버리고 있었던 것. 뱃지/카피 오버레이 쪽에
+     명시적으로 더 높은 z-index를 줘서 항상 바 배경 위에 그려지게 해요. */
+  .section-row[data-ref^="productdetail"] .ref-mask,
+  .section-row[data-ref^="productdetail"] .rt{ z-index:1; }
   /* 혜택: 글자 없는 이미지 위 텍스트 레이어 (원본 720x1032 기준, 가운데 정렬) */
   .rtb{text-align:center;}
   .rtb-tsub{font-weight:400;color:#333333;letter-spacing:-0.02em;}
@@ -3869,9 +3873,11 @@
         subcopy2:  {sample:'일이삼사오육칠팔구십일이삼', textBox:{x:72, y:208, w:360, h:32}, size:30, center:false}
       };
 
-      /* 기본형(혜택 0개) CTA — 레퍼런스대로 흰 배경 + 검정 테두리 알약 버튼, 내용 길이에 맞춰
-         가로폭이 늘어나요(스몰팝업 A타입 버튼과 같은 방식). */
-      var PRODUCTDETAIL_CTA_BASIC = { sample:'바로가기', box:{x:72, y:290, w:209, h:63}, size:24 };
+      /* 기본형(혜택 0개) CTA — 순수 CSS로 그리는 투명 배경 + 검정 테두리 버튼, 내용 길이에 맞춰
+         가로폭이 늘어나요(스몰팝업 A타입 버튼과 같은 방식). 2026-09-29(26차): "라운딩 4px에
+         폰트크기는 14 그리고 화살표는 6x12" (400x240 기준) -> 800 스케일로 2배: radius 8px,
+         font-size 28px, 화살표(chevron) 12x24(w x h). */
+      var PRODUCTDETAIL_CTA_BASIC = { sample:'바로가기', box:{x:72, y:290, w:209, h:63}, size:28, radius:8, chevW:12, chevH:24, borderW:3 };
 
       /* 혜택 1개/2개 — 쿠폰바 레이아웃 상수(전부 800 기준 실측값). startY는 혜택 개수별 바 시작
          y좌표 프리셋(개수가 바뀌면 전체 블록이 통째로 다른 y에서 시작). */
@@ -3882,7 +3888,9 @@
         x: 72, w: 656, h: 86, gap: 4,
         badgeH: 45, badgeOffsetX: 33,
         dividerOffsetX: 158, textOffsetX: 202, arrowW: 31,
-        sample: '바로가기', size: 24,
+        /* 2026-09-29(26차): "카피는 바로가기가 아니라 상세혜택을 입력해 주세요 이 카피로 바꿔줘"
+           요청으로 혜택바 카피 기본 안내문구를 변경. */
+        sample: '상세혜택을 입력해 주세요.', size: 24,
         startY: { 1: [290], 2: [254, 345] }
       };
 
@@ -3940,7 +3948,7 @@
         bg.style.borderRadius = Math.max(2, 8 * u) + 'px';
 
         var inset = B.h * 0.16;
-        divider.style.display = 'block';
+        divider.style.display = 'none'; // 2026-09-29(26차): 레퍼런스에 점선 구분선 없음 확인, 항상 숨김
         divider.style.left = ((B.x + B.dividerOffsetX) * u) + 'px';
         divider.style.top = ((barY + inset) * u) + 'px';
         divider.style.height = ((B.h - inset * 2) * u) + 'px';
@@ -3996,18 +4004,17 @@
             basicBtn.style.left = (box.x * u) + 'px';
             basicBtn.style.top = (box.y * u) + 'px';
             basicBtn.style.height = h + 'px';
-            /* 2026-09-29(25차): border-image 9-slice — 테두리 두께를 버튼 높이의 절반으로 둬서(원본
-               에셋의 얇은 라운드 모서리 비율과 동일), 카피가 길어져 버튼이 넓어져도 좌우 곧은 변만
-               늘어나고 모서리는 찌그러지지 않아요. */
-            var bw = h / 2;
-            basicBtn.style.borderWidth = bw + 'px';
-            basicBtn.style.borderImageWidth = bw + 'px';
-            /* border-image는 border-radius를 직접 반영하지 않지만, background(#fff)는 border-radius로
-               잘리므로 흰 배경이 사각 모서리로 삐져나오지 않게 원본 에셋 모서리 곡률(약 64px 높이 기준
-               8px)과 같은 비율로 라운드를 맞춰줘요. */
-            basicBtn.style.borderRadius = (h * 0.125) + 'px';
+            /* 2026-09-29(26차): 순수 CSS 버튼 — "라운딩 4px에 폰트크기는 14 그리고 화살표는 6x12"
+               (400 기준, 800 스케일로 2배: radius 8/font 28/화살표 12x24)를 전부 u로 다시 스케일. */
+            basicBtn.style.borderWidth = (PRODUCTDETAIL_CTA_BASIC.borderW * u) + 'px';
+            basicBtn.style.borderRadius = (PRODUCTDETAIL_CTA_BASIC.radius * u) + 'px';
             basicBtn.style.fontSize = (PRODUCTDETAIL_CTA_BASIC.size * u) + 'px';
             basicBtn.style.padding = '0 ' + (h * 0.4) + 'px';
+            var chev = basicBtn.querySelector('.rt-chev');
+            if (chev) {
+              chev.style.width = (PRODUCTDETAIL_CTA_BASIC.chevW * u) + 'px';
+              chev.style.height = (PRODUCTDETAIL_CTA_BASIC.chevH * u) + 'px';
+            }
           }
           if (basicTxt) basicTxt.textContent = (ctaInput && ctaInput.value.replace(/^\s+|\s+$/g, '')) || PRODUCTDETAIL_CTA_BASIC.sample;
           /* 2026-09-29(25차): 버튼이 이미지 기반(border-image) 9-slice로 바뀌면서 카피 길이에 따라
