@@ -3320,15 +3320,15 @@
 
       /* 아이캡션/헤드라인1/헤드라인2 — 사진 위에 그냥 얹는 텍스트라 마스크가 필요 없어요(카피1/2와 동일). */
       var SMALLPOPUP_TEXT = {
-        eyebrow:   {sample:'원데이빅딜',       textBox:{x:60, y:80,  w:400, h:34}, size:26, center:false},
-        headline1: {sample:'일이삼사오육칠팔', textBox:{x:60, y:140, w:480, h:50}, size:40, center:false},
-        headline2: {sample:'일이삼사오육칠팔', textBox:{x:60, y:200, w:480, h:50}, size:40, center:false}
+        eyebrow:   {sample:'원데이빅딜',       textBox:{x:60, y:80,  w:400, h:34}, size:32, center:false},
+        headline1: {sample:'일이삼사오육칠팔', textBox:{x:60, y:140, w:600, h:60}, size:56, center:false},
+        headline2: {sample:'일이삼사오육칠팔', textBox:{x:60, y:200, w:600, h:60}, size:56, center:false}
       };
       /* 쿠폰1/2 자리(빌보드배너 BILLBOARD_FIELDS와 같은 형식) — renderCouponBadgeSlot은 fieldBox.h로만
          뱃지 배율을 계산하므로 w는 포커스 하이라이트 박스 크기 참고용. */
       var SMALLPOPUP_FIELDS = {
-        coupon1: {x:60,  y:288, w:155, h:62},
-        coupon2: {x:200, y:288, w:140, h:62}
+        coupon1: {x:60,  y:288, w:175, h:72},
+        coupon2: {x:220, y:288, w:160, h:72}
       };
       /* CTA "바로가기" 알약 버튼 — 기본형(쿠폰 없음)일 땐 헤드라인 바로 아래, 혜택형(쿠폰 있음)일 땐
          쿠폰 아래로 자리가 내려가요(요청사항: "기본형과 혜택형 버튼 위치가 달라"). */
