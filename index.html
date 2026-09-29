@@ -3141,8 +3141,8 @@
               '<div class="field"><label for="bb-subcopy-' + seq + '">서브카피</label><input type="text" id="bb-subcopy-' + seq + '" data-bbinput="subcopy" placeholder="최대 글자 수 : 한 줄 15자 제한"></div>' +
             '</div>' +
             '<div class="field-row">' +
-              '<div class="field"><label for="bb-copy1-' + seq + '">카피 줄1</label><input type="text" id="bb-copy1-' + seq + '" data-bbinput="copy1" placeholder="최대 글자 수 : 한 줄당 8자"></div>' +
-              '<div class="field"><label for="bb-copy2-' + seq + '">카피 줄2(브랜드명)</label><input type="text" id="bb-copy2-' + seq + '" data-bbinput="copy2" placeholder="최대 글자 수 : 한 줄당 8자"></div>' +
+              '<div class="field"><label for="bb-copy1-' + seq + '">메인카피1</label><input type="text" id="bb-copy1-' + seq + '" data-bbinput="copy1" placeholder="최대 글자 수 : 한 줄당 8자"></div>' +
+              '<div class="field"><label for="bb-copy2-' + seq + '">메인카피2(브랜드명)</label><input type="text" id="bb-copy2-' + seq + '" data-bbinput="copy2" placeholder="최대 글자 수 : 한 줄당 8자"></div>' +
             '</div>' +
           '</div>';
 
@@ -3240,8 +3240,8 @@
         {id:'bb-image-' + seq, name:'이미지', type:'image'},
         {id:'bb-coupon1-' + seq, name:'쿠폰1', type:'text'},
         {id:'bb-coupon2-' + seq, name:'쿠폰2', type:'text'},
-        {id:'bb-copy1-' + seq, name:'카피1', type:'text'},
-        {id:'bb-copy2-' + seq, name:'카피2', type:'text'}
+        {id:'bb-copy1-' + seq, name:'메인카피1', type:'text'},
+        {id:'bb-copy2-' + seq, name:'메인카피2', type:'text'}
       ]};
       entry._fieldGroup = group;
       FIELD_MAP.push(group);
@@ -3312,7 +3312,12 @@
        'sp'로 바꿔 100% 재사용(이 컴포넌트들은 애초에 "나중에 추가할 다른 배너 타입에서도 재사용"할
        수 있게 만들어져 있었어요). 다만 CTA "바로가기 >" 버튼은 빌보드배너엔 없던 새 요소이고,
        기본형/혜택형에 따라 버튼 자리(쿠폰 유무로 아래로 밀림) 자체가 달라져야 해서 이 부분만 새로
-       만들었어요. */
+       만들었어요.
+       2026-09-29(20차): 배너 타이틀은 "스몰팝업 A타입 (이미지좌측형)"으로, 카피 필드 라벨은
+       아이캡션→서브카피, 헤드라인1/2→메인카피1/메인카피2로 이름을 바꿨어요. 사용자 요청: "앞으로
+       모든 배너의 카피제목은, 기본으로 서브카피랑 메인카피로 적용해서 적어줘" — 이후 추가하는 모든
+       새 배너 타입의 카피 필드 라벨도 기본값으로 서브카피/메인카피(메인카피가 여러 줄이면
+       메인카피1, 메인카피2...) 네이밍을 따라야 해요. */
     var smallpopupRef = document.getElementById('smallpopup-entry-list');
     if (smallpopupRef) {
       var SMALLPOPUP_DIMS = { w: 720, h: 818 };
@@ -3420,7 +3425,7 @@
         entry.dataset.entrySeq = seq;
         entry.innerHTML =
           '<div class="card-head">' +
-            '<h2>스몰팝업</h2>' +
+            '<h2>스몰팝업 A타입 (이미지좌측형)</h2>' +
             '<button type="button" class="btn-remove-row" hidden aria-label="이 스몰팝업 삭제">' +
               '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>' +
             '</button>' +
@@ -3465,11 +3470,11 @@
               '</div>' +
             '</div>' +
             '<div class="field-row single">' +
-              '<div class="field"><label for="sp-eyebrow-' + seq + '">아이캡션</label><input type="text" id="sp-eyebrow-' + seq + '" placeholder="예: 원데이빅딜"></div>' +
+              '<div class="field"><label for="sp-eyebrow-' + seq + '">서브카피</label><input type="text" id="sp-eyebrow-' + seq + '" placeholder="예: 원데이빅딜"></div>' +
             '</div>' +
             '<div class="field-row">' +
-              '<div class="field"><label for="sp-headline1-' + seq + '">헤드라인1</label><input type="text" id="sp-headline1-' + seq + '" placeholder="최대 글자 수 : 한 줄 기준"></div>' +
-              '<div class="field"><label for="sp-headline2-' + seq + '">헤드라인2</label><input type="text" id="sp-headline2-' + seq + '" placeholder="최대 글자 수 : 한 줄 기준"></div>' +
+              '<div class="field"><label for="sp-headline1-' + seq + '">메인카피1</label><input type="text" id="sp-headline1-' + seq + '" placeholder="최대 글자 수 : 한 줄 기준"></div>' +
+              '<div class="field"><label for="sp-headline2-' + seq + '">메인카피2</label><input type="text" id="sp-headline2-' + seq + '" placeholder="최대 글자 수 : 한 줄 기준"></div>' +
             '</div>' +
             '<div class="field-row" id="sp-coupon-fields-' + seq + '">' +
               '<div class="field coupon-field">' +
@@ -3574,11 +3579,11 @@
         });
         if (ctaInput) ctaInput.addEventListener('input', function(){ renderSmallpopupCta(seq, isBasicState); });
 
-        var group = { section: '스몰팝업', fields: [
+        var group = { section: '스몰팝업 A타입 (이미지좌측형)', fields: [
           {id:'sp-image-' + seq, name:'이미지', type:'image'},
-          {id:'sp-eyebrow-' + seq, name:'아이캡션', type:'text'},
-          {id:'sp-headline1-' + seq, name:'헤드라인1', type:'text'},
-          {id:'sp-headline2-' + seq, name:'헤드라인2', type:'text'},
+          {id:'sp-eyebrow-' + seq, name:'서브카피', type:'text'},
+          {id:'sp-headline1-' + seq, name:'메인카피1', type:'text'},
+          {id:'sp-headline2-' + seq, name:'메인카피2', type:'text'},
           {id:'sp-coupon1-' + seq, name:'쿠폰1', type:'text'},
           {id:'sp-coupon2-' + seq, name:'쿠폰2', type:'text'},
           {id:'sp-cta-' + seq, name:'버튼카피', type:'text'}
@@ -3600,7 +3605,7 @@
       function renumberSmallpopupEntries(){
         var rows = Array.prototype.slice.call(smallpopupRef.children);
         rows.forEach(function(row, idx){
-          var label = idx === 0 ? '스몰팝업' : '스몰팝업' + (idx + 1);
+          var label = idx === 0 ? '스몰팝업 A타입 (이미지좌측형)' : '스몰팝업 A타입 (이미지좌측형)' + (idx + 1);
           if (row._fieldGroup) row._fieldGroup.section = label;
           var h2 = row.querySelector('.card-head h2');
           if (h2) h2.textContent = label;
