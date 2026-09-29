@@ -204,7 +204,10 @@
      제목 높이에 맞춰)으로 이동 — 쿠폰 삭제 버튼 레이아웃과 동일한 방식. */
   .card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:0;grid-column:1/-1;}
   .card-head h2{font-size:22.3px;margin:0;letter-spacing:-0.005em;}
-  .section-badge{grid-column:1/-1;margin-bottom:8px;font-size:30px;font-weight:700;color:var(--accent);letter-spacing:-0.01em;}
+  /* 2026-09-29(13차): 배지("디자인 페이지 카피 · 이미지 입력" 등) 위에 영문 아이레브로우
+     ("DESIGN"/"BANNER")를 새로 추가하고, 기존 배지 글자 크기는 절반으로 줄임. */
+  .section-eyebrow{grid-column:1/-1;margin-bottom:4px;font-size:40px;font-weight:800;color:#111111;letter-spacing:-0.01em;}
+  .section-badge{grid-column:1/-1;margin-bottom:8px;font-size:15px;font-weight:700;color:var(--accent);letter-spacing:-0.01em;}
 
   .field-row{display:flex;flex-direction:column;gap:14px;}
   .field-row.single{display:flex;}
@@ -399,6 +402,7 @@
   </header>
 
   <div class="section-row" data-ref="hero">
+    <div class="section-eyebrow">DESIGN</div>
     <div class="section-badge">디자인 페이지 카피 · 이미지 입력</div>
     <div class="card-head"><h2>메인상단</h2></div>
     <div class="ref-panel">
@@ -2910,6 +2914,7 @@
       entry.dataset.typeKey = 'billboard';
       entry.dataset.entrySeq = seq;
       entry.innerHTML =
+        '<div class="section-eyebrow" style="display:none">BANNER</div>' +
         '<div class="section-badge" style="display:none">배너 카피·이미지 입력</div>' +
         '<div class="card-head">' +
           '<h2>메인빌보드</h2>' +
@@ -3116,6 +3121,8 @@
         if (h2) h2.textContent = label;
         var badge = row.querySelector('.section-badge');
         if (badge) badge.style.display = idx === 0 ? '' : 'none';
+        var eyebrow = row.querySelector('.section-eyebrow');
+        if (eyebrow) eyebrow.style.display = idx === 0 ? '' : 'none';
         var delBtn = row.querySelector('.btn-remove-row');
         if (delBtn) delBtn.hidden = rows.length <= 1;
       });
