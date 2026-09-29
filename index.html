@@ -41,8 +41,8 @@
 
   header.page{margin-bottom:8px;}
   h1{font-size:70px;font-weight:700;margin:0 0 6px;letter-spacing:-0.01em;}
-  .lede{color:var(--muted);font-size:14.5px;margin:0 0 6px;white-space:nowrap;}
-  .ref-note{font-size:14.5px;color:var(--muted);margin:0 0 44px;}
+  .lede{color:var(--muted);font-size:14.5px;margin:0 0 6px;white-space:nowrap;line-height:1.2;}
+  .ref-note{font-size:14.5px;color:var(--muted);margin:0 0 44px;line-height:1.2;}
 
   .row-divider{border:none;border-top:1px solid var(--line);margin:64px 0;}
   .row-divider-banner{border-top-width:4px;border-top-color:#111111;margin:80px 0;}
@@ -219,7 +219,9 @@
         margin-bottom이 이 row-gap 24px 위에 "추가로" 더해짐(margin 16px + gap 24px = 40px) ->
         margin-bottom을 24px만큼 미리 빼서(16-24=-8px) 최종 보이는 간격이 정확히 16px가 되도록 함. */
   .section-eyebrow{grid-column:1/-1;margin-bottom:-8px;font-size:50px;font-weight:800;color:#111111;letter-spacing:-0.01em;line-height:1;}
-  .section-badge{grid-column:1/-1;margin-bottom:8px;font-size:15px;font-weight:700;color:#FF0038;letter-spacing:-0.01em;line-height:1.3;}
+  /* 2026-09-29(15차): 배지("프로모션 페이지 카피를 입력하고..." 등) 아래 다음 줄(카드 제목)과의
+     간격을 16px 더 늘려달라는 요청 — 기존 margin-bottom 8px에 16px를 더해 24px로. */
+  .section-badge{grid-column:1/-1;margin-bottom:24px;font-size:15px;font-weight:700;color:#FF0038;letter-spacing:-0.01em;line-height:1.3;}
 
   .field-row{display:flex;flex-direction:column;gap:14px;}
   .field-row.single{display:flex;}
@@ -409,8 +411,8 @@
 <div class="wrap" id="view-onedaybigdeal">
   <header class="page">
     <h1>원데이빅딜</h1>
-    <p class="lede">각 섹션의 왼쪽 레퍼런스를 보고 오른쪽에 카피·이미지를 채운 다음, 맨 아래에서 구글시트를 만드세요.</p>
-    <p class="ref-note">입력 중인 필드가 실제 어디에 들어가는지 왼쪽 이미지에 표시돼요.</p>
+    <p class="lede">원데이 빅딜 프로모션 페이지, 배너 기획서를 제작하는 페이지 입니다.</p>
+    <p class="ref-note">각 섹션의 레퍼런스 이미지를 참고하여, 카피와 이미지를 채우고, 구글시트와 기획서를 만들어 주세요.</p>
   </header>
 
   <div class="section-row" data-ref="hero">
